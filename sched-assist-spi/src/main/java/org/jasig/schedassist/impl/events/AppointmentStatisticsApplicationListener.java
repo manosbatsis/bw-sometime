@@ -19,10 +19,6 @@
 
 package org.jasig.schedassist.impl.events;
 
-import java.util.Date;
-
-import javax.sql.DataSource;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,10 +28,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.incrementer.DataFieldMaxValueIncrementer;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
+
+import javax.sql.DataSource;
 
 /**
  * {@link ApplicationListener} that inserts a row in the 
@@ -49,7 +49,7 @@ public class AppointmentStatisticsApplicationListener implements
 		ApplicationListener<AbstractAppointmentEvent> {
 
 	private Log LOG = LogFactory.getLog(this.getClass());
-	private SimpleJdbcTemplate simpleJdbcTemplate;
+	private JdbcTemplate simpleJdbcTemplate;
 	private DataFieldMaxValueIncrementer statisticsEventIdSequence;
 	private String identifyingAttributeName = "uid";
 	
@@ -59,7 +59,7 @@ public class AppointmentStatisticsApplicationListener implements
 	 */
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
-		this.simpleJdbcTemplate = new SimpleJdbcTemplate(dataSource);
+		this.simpleJdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	/**
 	 * @param statisticsEventIdSequence the statisticsEventIdSequence to set

@@ -20,10 +20,6 @@
 
 package org.jasig.schedassist.web.visitor;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.jasig.schedassist.RelationshipDao;
 import org.jasig.schedassist.SchedulingAssistantService;
@@ -48,7 +44,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@link Controller} that provides data about the current authenticated
@@ -125,10 +125,13 @@ public class VisitorScheduleController {
 	 * @throws NotAVisitorException
 	 * @throws OwnerNotFoundException
 	 */
-	@RequestMapping(value="/schedule/{ownerIdentifier}/visitor-conflicts.json", method=RequestMethod.GET)
-	public View retrieveVisitorConflicts(@PathVariable("ownerIdentifier") String ownerIdentifier, 
-			@RequestParam(value="weekStart", required=false, defaultValue="0") int weekStart,
-			final ModelMap model) throws NotAVisitorException, OwnerNotFoundException {
+	@RequestMapping(value="/schedule/{ownerIdentifier}/visitor-conflicts.json",
+					method=RequestMethod.GET)
+	public View retrieveVisitorConflicts(
+					@PathVariable("ownerIdentifier") String ownerIdentifier,
+					@RequestParam(value="weekStart", required=false, defaultValue="0") int weekStart,
+					final ModelMap model)
+					throws NotAVisitorException, OwnerNotFoundException {
 		CalendarAccountUserDetailsImpl currentUser = (CalendarAccountUserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		IScheduleVisitor visitor = currentUser.getScheduleVisitor();
 		
@@ -139,11 +142,11 @@ public class VisitorScheduleController {
 				owner, requestConstraints.getTargetStartDate(), requestConstraints.getTargetEndDate());
 		List<String> conflictBlocks = new ArrayList<String>();
 		SimpleDateFormat df = CommonDateOperations.getDateTimeFormat();
-		for(AvailableBlock b: visitorConflicts) {
+		for (AvailableBlock b: visitorConflicts) {
 			conflictBlocks.add(df.format(b.getStartTime()));
 		}
 		model.addAttribute("conflicts", conflictBlocks);
-		return new MappingJacksonJsonView();
+		return new MappingJackson2JsonView();
 	}
 	
 

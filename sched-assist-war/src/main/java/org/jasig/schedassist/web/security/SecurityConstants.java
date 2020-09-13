@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -16,15 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-
 package org.jasig.schedassist.web.security;
 
 import org.jasig.schedassist.model.IDelegateCalendarAccount;
 import org.jasig.schedassist.model.IScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
  * This class defines the {@link GrantedAuthority} instances that constitute
@@ -34,35 +32,45 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl;
  * @version $Id: SecurityConstants.java 2979 2011-01-25 19:24:44Z npblair $
  */
 public final class SecurityConstants {
-
 	/**
 	 * Role that grants access to the registration form for delegate calendar accounts.
 	 */
-	public static final GrantedAuthority DELEGATE_REGISTER = new GrantedAuthorityImpl("ROLE_DELEGATE_REGISTER");
+	public static final GrantedAuthority DELEGATE_REGISTER =
+					new SimpleGrantedAuthority("ROLE_DELEGATE_REGISTER");
 	/**
 	 * Role that grants access to {@link IScheduleOwner} features for delegate calendar accoutnts.
 	 */
-	public static final GrantedAuthority DELEGATE_OWNER = new GrantedAuthorityImpl("ROLE_DELEGATE_OWNER");
+	public static final GrantedAuthority DELEGATE_OWNER =
+					new SimpleGrantedAuthority("ROLE_DELEGATE_OWNER");
+
 	/**
 	 * Role that grants access to {@link IScheduleOwner} features for customer accounts.
 	 */
-	public static final GrantedAuthority OWNER = new GrantedAuthorityImpl("ROLE_OWNER");
+	public static final GrantedAuthority OWNER =
+					new SimpleGrantedAuthority("ROLE_OWNER");
+
 	/**
 	 * Role that grants access to {@link IScheduleVisitor} features (view schedule, create/cancel appointments)
 	 */
-	public static final GrantedAuthority VISITOR = new GrantedAuthorityImpl("ROLE_VISITOR");
+	public static final GrantedAuthority VISITOR =
+					new SimpleGrantedAuthority("ROLE_VISITOR");
+
 	/**
 	 * Role that grants access to the registration form for customer accounts.
 	 */
-	public static final GrantedAuthority REGISTER = new GrantedAuthorityImpl("ROLE_REGISTER");
+	public static final GrantedAuthority REGISTER =
+					new SimpleGrantedAuthority("ROLE_REGISTER");
+
 	/**
 	 * Role that grants access to log in as a {@link IDelegateCalendarAccount}.
 	 */
-	public static final GrantedAuthority DELEGATE_LOGIN = new GrantedAuthorityImpl("ROLE_DELEGATE_LOGIN");
+	public static final GrantedAuthority DELEGATE_LOGIN =
+					new SimpleGrantedAuthority("ROLE_DELEGATE_LOGIN");
 	
 	/**
 	 * Role that grants access to the application administrative functions.
 	 */
-	public static final GrantedAuthority AVAILABLE_ADMINISTRATOR = new GrantedAuthorityImpl("ROLE_AVAILABLE_ADMINISTRATOR");
+	public static final GrantedAuthority AVAILABLE_ADMINISTRATOR =
+					new SimpleGrantedAuthority("ROLE_AVAILABLE_ADMINISTRATOR");
 
 }

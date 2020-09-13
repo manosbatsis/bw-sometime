@@ -19,11 +19,6 @@
 
 package org.jasig.schedassist.impl.owner;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.sql.DataSource;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,8 +34,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
 
 /**
  * {@link MutableRelationshipDao} implementation that is backed by the {@link IScheduleOwner}
@@ -54,7 +54,7 @@ import org.springframework.stereotype.Service;
 public class OwnerDefinedRelationshipDaoImpl implements MutableRelationshipDao {
 
 	private Log LOG = LogFactory.getLog(this.getClass());
-	private SimpleJdbcTemplate simpleJdbcTemplate;
+	private JdbcTemplate simpleJdbcTemplate;
 	private ICalendarAccountDao calendarAccountDao;
 	private OwnerDao ownerDao;
 	private VisitorDao visitorDao;
@@ -66,7 +66,7 @@ public class OwnerDefinedRelationshipDaoImpl implements MutableRelationshipDao {
 	 */
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
-		this.simpleJdbcTemplate = new SimpleJdbcTemplate(dataSource);
+		this.simpleJdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	/**
 	 * @param calendarAccountDao the calendarAccountDao to set

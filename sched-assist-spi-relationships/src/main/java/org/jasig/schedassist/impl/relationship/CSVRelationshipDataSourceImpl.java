@@ -19,6 +19,22 @@
 
 package org.jasig.schedassist.impl.relationship;
 
+import au.com.bytecode.opencsv.CSVReader;
+import org.apache.commons.lang.time.StopWatch;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.Resource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -29,23 +45,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.sql.DataSource;
-
-import org.apache.commons.lang.time.StopWatch;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.Resource;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import au.com.bytecode.opencsv.CSVReader;
 
 
 /**
@@ -72,7 +71,7 @@ public class CSVRelationshipDataSourceImpl implements RelationshipDataSource, In
 	private Resource csvResource;
 	private Long resourceLastModified = -1L;
 	private Date lastReloadTimestamp;
-	private SimpleJdbcTemplate simpleJdbcTemplate;
+	private NamedParameterJdbcTemplate npJdbcTemplate;
 	private JdbcTemplate jdbcTemplate;
 	
 	/**
@@ -84,8 +83,8 @@ public class CSVRelationshipDataSourceImpl implements RelationshipDataSource, In
 	/**
 	 * @return the simpleJdbcTemplate
 	 */
-	protected SimpleJdbcTemplate getSimpleJdbcTemplate() {
-		return simpleJdbcTemplate;
+	protected NamedParameterJdbcTemplate getNpJdbcTemplate() {
+		return npJdbcTemplate;
 	}
 	/**
 	 * @return the jdbcTemplate
@@ -97,7 +96,7 @@ public class CSVRelationshipDataSourceImpl implements RelationshipDataSource, In
 	 * @param dataSource the dataSource to set
 	 */
 	public void setDataSource(DataSource dataSource) {
-		this.simpleJdbcTemplate = new SimpleJdbcTemplate(dataSource);
+		this.npJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
@@ -111,13 +110,13 @@ public class CSVRelationshipDataSourceImpl implements RelationshipDataSource, In
 			throw new IllegalStateException("advisorListResource is required");
 		}
 		
-		if(simpleJdbcTemplate == null) {
+		if (npJdbcTemplate == null) {
 			throw new IllegalStateException("dataSource is required");
 		}
 	}
 
 	/**
-	 * Main method to allow command line invocation of the {@link #reloadData(Resource)} method.
+	 * Main method to allow command line invocation of the reloadData(Resource) method.
 	 * This method attempts to load a {@link ClassPathXmlApplicationContext} from the 
 	 * location specified in the System property:
 	 <pre>
@@ -139,15 +138,13 @@ public class CSVRelationshipDataSourceImpl implements RelationshipDataSource, In
 
 	/**
 	 * This method deletes all existing rows from the isis_records table, then invokes
-	 * {@link #batchLoadData(Resource)} to refresh it.
+	 * batchLoadData(Resource) to refresh it.
 	 * 
 	 * This method is marked with Spring's {@link Transactional} annotation, and if
 	 * the Scheduling Assistant application is running should only be executed when transactional 
 	 * support is available.
 	 * 
 	 * @see Transactional
-	 * @param resource
-	 * @throws IOException
 	 */
 	@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW)
 	public synchronized void reloadData() {
@@ -178,7 +175,7 @@ public class CSVRelationshipDataSourceImpl implements RelationshipDataSource, In
 				stopWatch.reset();
 				stopWatch.start();
 				SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(records.toArray());
-				this.getSimpleJdbcTemplate().batchUpdate(
+				this.getNpJdbcTemplate().batchUpdate(
 						"insert into csv_relationships (owner_id, visitor_id, rel_description) values (:ownerIdentifier, :visitorIdentifier, :relationshipDescription)",
 						batch);
 				long insertTime = stopWatch.getTime();

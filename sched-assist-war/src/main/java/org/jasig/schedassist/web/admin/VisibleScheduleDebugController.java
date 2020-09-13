@@ -20,12 +20,7 @@
 
 package org.jasig.schedassist.web.admin;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.fortuna.ical4j.model.Calendar;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.schedassist.CalendarAccountNotFoundException;
@@ -51,7 +46,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controller that displays the {@link VisibleSchedule} for a particular
@@ -136,18 +135,19 @@ public class VisibleScheduleDebugController {
 	}
 	/**
 	 * 
-	 * @param ownerId
+	 * @param ownerIdentifier
 	 * @param highContrast
 	 * @param visitorUsername
 	 * @return
 	 * @throws NotAVisitorException
-	 * @throws CalendarUserNotFoundException 
+	 * @throws CalendarAccountNotFoundException
 	 */
 	@RequestMapping(value="/admin/schedule-debug/{ownerIdentifier}/view.html", method=RequestMethod.GET)
-	public String displaySchedule(@PathVariable("ownerIdentifier") long ownerIdentifier, 
-			@RequestParam(value="highContrast", required=false, defaultValue="false") boolean highContrast,
-			@RequestParam(value="weekStart", required=false, defaultValue="0") int weekStart,
-			@RequestParam(value="visitorUsername", required=true) String visitorUsername,
+	public String displaySchedule(
+					@PathVariable("ownerIdentifier") long ownerIdentifier,
+					@RequestParam(value="highContrast", required=false, defaultValue="false") boolean highContrast,
+					@RequestParam(value="weekStart", required=false, defaultValue="0") int weekStart,
+					@RequestParam(value="visitorUsername", required=true) String visitorUsername,
 			ModelMap model) throws NotAVisitorException, CalendarAccountNotFoundException {
 		
 		ICalendarAccount visitorAccount = this.calendarAccountDao.getCalendarAccount(visitorUsername);
@@ -210,7 +210,7 @@ public class VisibleScheduleDebugController {
 	 * @param model
 	 * @return
 	 * @throws NotAVisitorException 
-	 * @throws CalendarUserNotFoundException 
+	 * @throws CalendarAccountNotFoundException
 	 */
 	@RequestMapping(value="/admin/schedule-debug/{ownerIdentifier}/visitor-conflicts.json", method=RequestMethod.GET)
 	public View visitorConflicts(@PathVariable("ownerIdentifier") long ownerIdentifier, 
@@ -242,7 +242,7 @@ public class VisibleScheduleDebugController {
 		Calendar visitorCalendar = this.calendarDataDao.getCalendar(visitorAccount, 
 				requestConstraints.getTargetStartDate(), requestConstraints.getTargetEndDate());
 		model.addAttribute("visitorCalendarData", visitorCalendar.toString());
-		return new MappingJacksonJsonView();
+		return new MappingJackson2JsonView();
 	}
 	
 }

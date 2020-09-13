@@ -19,16 +19,8 @@
 
 package org.jasig.schedassist.impl.owner;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
+import com.googlecode.ehcache.annotations.Cacheable;
+import com.googlecode.ehcache.annotations.TriggersRemove;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -41,17 +33,24 @@ import org.jasig.schedassist.model.PublicProfileTag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.googlecode.ehcache.annotations.Cacheable;
-import com.googlecode.ehcache.annotations.TriggersRemove;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.sql.DataSource;
 
 
 /**
@@ -66,7 +65,7 @@ public class SpringJDBCPublicProfileDaoImpl
 
 	protected static final int PROFILE_KEY_LENGTH = 8;
 	private Log LOG = LogFactory.getLog(this.getClass());
-	private SimpleJdbcTemplate simpleJdbcTemplate;
+	private JdbcTemplate simpleJdbcTemplate;
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 	
 	/**
@@ -74,7 +73,7 @@ public class SpringJDBCPublicProfileDaoImpl
 	 */
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
-		this.simpleJdbcTemplate = new SimpleJdbcTemplate(dataSource);
+		this.simpleJdbcTemplate = new JdbcTemplate(dataSource);
 		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	}
 	/*
@@ -314,7 +313,8 @@ public class SpringJDBCPublicProfileDaoImpl
 		
 		List<PublicProfileTag> toStore = stringAsTags(tags, profileId);
 		SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(toStore.toArray());
-		this.simpleJdbcTemplate.batchUpdate("insert into profile_tags (profile_key,tag,tag_display) values (:profileKey,:tag,:tagDisplay)",
+
+		namedParameterJdbcTemplate.batchUpdate("insert into profile_tags (profile_key,tag,tag_display) values (:profileKey,:tag,:tagDisplay)",
 				batch);
 		LOG.debug("inserted " + tags.size() + " tags for " + profileId);
 		return toStore;	

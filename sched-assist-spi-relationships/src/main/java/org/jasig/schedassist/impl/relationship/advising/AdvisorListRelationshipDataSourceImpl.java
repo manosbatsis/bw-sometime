@@ -19,15 +19,6 @@
 
 package org.jasig.schedassist.impl.relationship.advising;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.sql.DataSource;
-
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,13 +28,21 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
-import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.sql.DataSource;
 
 /**
  * Spring {@link SimpleJdbcDaoSupport} backed mechanism for
@@ -87,8 +86,8 @@ public class AdvisorListRelationshipDataSourceImpl implements RelationshipDataSo
 	private Resource advisorListResource;
 	private Long resourceLastModified = -1L;
 	private Date lastReloadTimestamp;
-	private SimpleJdbcTemplate simpleJdbcTemplate;
 	private JdbcTemplate jdbcTemplate;
+	private NamedParameterJdbcTemplate npJdbcTemplate;
 	private int advisorEmplidFieldNumber = 21;
 	private int relationshipDescriptionFieldNumber = 15;
 	private int studentEmplidFieldNumber = 2;
@@ -103,23 +102,25 @@ public class AdvisorListRelationshipDataSourceImpl implements RelationshipDataSo
 	public void setAdvisorListResource(Resource advisorListResource) {
 		this.advisorListResource = advisorListResource;
 	}
-	/**
-	 * @return the simpleJdbcTemplate
-	 */
-	protected SimpleJdbcTemplate getSimpleJdbcTemplate() {
-		return simpleJdbcTemplate;
-	}
+
 	/**
 	 * @return the jdbcTemplate
 	 */
 	protected JdbcTemplate getJdbcTemplate() {
 		return jdbcTemplate;
 	}
+
+	/**
+	 * @return the npJdbcTemplate
+	 */
+	protected NamedParameterJdbcTemplate getNpJdbcTemplate() {
+		return npJdbcTemplate;
+	}
+
 	/**
 	 * @param dataSource the dataSource to set
 	 */
 	public void setDataSource(DataSource dataSource) {
-		this.simpleJdbcTemplate = new SimpleJdbcTemplate(dataSource);
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
@@ -218,7 +219,7 @@ public class AdvisorListRelationshipDataSourceImpl implements RelationshipDataSo
 			throw new IllegalStateException("advisorListResource is required");
 		}
 		
-		if(simpleJdbcTemplate == null) {
+		if(jdbcTemplate == null) {
 			throw new IllegalStateException("dataSource is required");
 		}
 	}
@@ -258,9 +259,9 @@ public class AdvisorListRelationshipDataSourceImpl implements RelationshipDataSo
 	 */
 	@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW)
 	public synchronized void reloadData() {
-		final String propertyValue = System.getProperty("org.jasig.schedassist.runScheduledTasks", "true");
-		if(Boolean.parseBoolean(propertyValue)) {
+		if (Boolean.getBoolean("org.jasig.schedassist.runScheduledTasks")) {
 			String currentTerm = TermCalculator.getCurrentTerm();
+
 			if(isResourceUpdated(advisorListResource)) {
 				LOG.info("resource updated, reloading advisorList data");
 				List<StudentAdvisorAssignment> records = readResource(advisorListResource, currentTerm);
@@ -274,7 +275,7 @@ public class AdvisorListRelationshipDataSourceImpl implements RelationshipDataSo
 				stopWatch.reset();
 				stopWatch.start();
 				SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(records.toArray());
-				this.getSimpleJdbcTemplate().batchUpdate(
+				this.getNpJdbcTemplate().batchUpdate(
 						"insert into advisorlist (advisor_emplid, advisor_relationship, student_emplid, term_description, term_number, advisor_type, committee_role) values (:advisorEmplid, :advisorRelationshipDescription, :studentEmplid, :termDescription, :termNumber, :advisorType, :committeeRole)",
 						batch);
 				long insertTime = stopWatch.getTime();

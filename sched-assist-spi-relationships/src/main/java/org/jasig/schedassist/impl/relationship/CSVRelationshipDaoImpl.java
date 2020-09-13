@@ -19,11 +19,6 @@
 
 package org.jasig.schedassist.impl.relationship;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.sql.DataSource;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,8 +34,13 @@ import org.jasig.schedassist.model.Relationship;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
 
 /**
  * Spring JDBC {@link RelationshipDao} backed by the same table that is
@@ -54,7 +54,7 @@ public class CSVRelationshipDaoImpl implements RelationshipDao {
 
 	private Log LOG = LogFactory.getLog(this.getClass());
 	
-	private SimpleJdbcTemplate simpleJdbcTemplate;
+	private JdbcTemplate simpleJdbcTemplate;
 	private String identifyingAttributeName = "uid";
 	private ICalendarAccountDao calendarAccountDao;
 	private OwnerDao ownerDao;
@@ -66,7 +66,7 @@ public class CSVRelationshipDaoImpl implements RelationshipDao {
 	 */
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
-		this.simpleJdbcTemplate = new SimpleJdbcTemplate(dataSource);
+		this.simpleJdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	/**
 	 * @param calendarAccountDao the calendarAccountDao to set

@@ -19,7 +19,7 @@
 
 package org.jasig.schedassist.portlet.webflow;
 
-import org.springframework.webflow.mvc.portlet.AbstractFlowHandler;
+import org.springframework.webflow.mvc.servlet.AbstractFlowHandler;
 
 
 /**

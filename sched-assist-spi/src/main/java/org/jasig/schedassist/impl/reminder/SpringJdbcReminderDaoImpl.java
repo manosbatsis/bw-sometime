@@ -19,13 +19,7 @@
 
 package org.jasig.schedassist.impl.reminder;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.sql.DataSource;
-
 import net.fortuna.ical4j.model.component.VEvent;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,10 +30,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.incrementer.DataFieldMaxValueIncrementer;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.sql.DataSource;
 
 /**
  * Spring JDBC implementation of internal {@link ReminderDao} interface.
@@ -50,7 +49,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 class SpringJdbcReminderDaoImpl implements ReminderDao {
 
-	private SimpleJdbcTemplate simpleJdbcTemplate;
+	private JdbcTemplate simpleJdbcTemplate;
 	private DataFieldMaxValueIncrementer reminderIdSequence;
 	private Log LOG = LogFactory.getLog(this.getClass());
 	private String identifyingAttributeName = "uid";
@@ -60,7 +59,7 @@ class SpringJdbcReminderDaoImpl implements ReminderDao {
 	 */
 	@Autowired
 	public void setDataSource(DataSource ds) {
-		this.simpleJdbcTemplate = new SimpleJdbcTemplate(ds);
+		this.simpleJdbcTemplate = new JdbcTemplate(ds);
 	}
 	/**
 	 * @param reminderIdSequence the reminderIdSequence to set

@@ -19,9 +19,6 @@
 
 package org.jasig.schedassist.impl.owner;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.schedassist.ICalendarAccountDao;
@@ -31,7 +28,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Tool for auditing {@link IScheduleOwner} records.
@@ -39,7 +39,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
  * @author Nicholas Blair, nblair@doit.wisc.edu
  * @version $Id: ScheduleOwnerAuditor.java 2400 2010-08-19 18:12:29Z npblair $
  */
-public final class ScheduleOwnerAuditor extends SimpleJdbcDaoSupport {
+public final class ScheduleOwnerAuditor extends JdbcDaoSupport {
 
 	/**
 	 * Set a {@link System} property with this name to specify an alternate location for the Spring {@link ApplicationContext} used by {@link #main(String[])}.
@@ -79,7 +79,7 @@ public final class ScheduleOwnerAuditor extends SimpleJdbcDaoSupport {
 	 * @return a {@link List} of all {@link PersistenceScheduleOwner}s in the database
 	 */
 	protected List<PersistenceScheduleOwner> gatherAllScheduleOwnerRecords() {
-		List<PersistenceScheduleOwner> ownerRecords = this.getSimpleJdbcTemplate().query(
+		List<PersistenceScheduleOwner> ownerRecords = this.getJdbcTemplate().query(
 				"select * from owners", 
 				new PersistenceScheduleOwnerRowMapper());
 		return ownerRecords;
@@ -102,7 +102,7 @@ public final class ScheduleOwnerAuditor extends SimpleJdbcDaoSupport {
 			if(null != byUniqueId && byUniqueId.isEligible()) {
 				// this means that the customer must have changed their NetID, and our records need an update
 				LOG.warn("found calendarAccount by unique id that has different username from records, owner record: " + owner + ", account: " +byUniqueId);
-				int rows = this.getSimpleJdbcTemplate().update("update owners set username = ? where external_unique_id = ?",
+				int rows = this.getJdbcTemplate().update("update owners set username = ? where external_unique_id = ?",
 						byUniqueId.getUsername(),
 						owner.getCalendarUniqueId());
 				if(rows == 1) {

@@ -19,20 +19,8 @@
 
 package org.jasig.schedassist.impl.caldav;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Parameter;
@@ -46,7 +34,6 @@ import net.fortuna.ical4j.model.property.Status;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.Calendars;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.time.DateUtils;
@@ -100,6 +87,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Implementation of {@link ICalendarDataDao} for CalDAV-capable calendar servers.
  * 
@@ -117,7 +115,7 @@ import org.springframework.stereotype.Service;
  * <i>caldav.cancelUpdatesVisitorCalendar property</i> to true will add behavior to {@link #cancelAppointment(IScheduleVisitor, IScheduleOwner, VEvent)}
  * and {@link #leaveAppointment(IScheduleVisitor, IScheduleOwner, VEvent)} remove the CANCELLED entries from the visitor's calendar.
  * 
- * This instance constructs a {@link DefaultCaldavEventUtilsImpl} instance with a {@link NullAffiliationSourceImpl}; if you need to override the {@link IEventUtils}
+ * This instance constructs a DefaultCaldavEventUtilsImpl instance with a {@link NullAffiliationSourceImpl}; if you need to override the {@link IEventUtils}
  * instance, a setter is provided ({@link #setEventUtils(IEventUtils)}).
  * 
  * Lastly this instance constructs a {@link NoopHttpMethodInterceptorImpl} instance; if you need to
@@ -831,7 +829,8 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	/**
 	 * Merge the components from all calendars into one result.
 	 * 
-	 * @param calendars
+	 * @param left calendar
+	 * @param right calendar
 	 * @return
 	 */
 	protected Calendar merge(Calendar left, Calendar right) {
@@ -847,22 +846,20 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	 * The first {@link Calendar} argument is altered by this method.
 	 * 
 	 * @param target
-	 * @param left
-	 * @param right
+	 * @param left calendar
+	 * @param right calendar
 	 */
 	protected void merge(Calendar target, Calendar left, Calendar right) {
 		Map<String, VTimeZone> existingTimezones = new HashMap<String, VTimeZone>();
 		// first pass is through the target to id VTIMEZONEs already stored
-		for(Iterator<?> i = target.getComponents().iterator(); i.hasNext();) {
-			Component c = (Component) i.next();
+		for (final var c: target.getComponents()) {
 			if(VTimeZone.VTIMEZONE.equals(c.getName())) {
 				VTimeZone tz = (VTimeZone) c;
 				existingTimezones.put(tz.getTimeZoneId().getValue(), tz);
 			}
 		}
 		// 2nd: pass through left
-		for(Iterator<?> i = left.getComponents().iterator(); i.hasNext();) {
-			Component c = (Component) i.next();
+		for (final var c: left.getComponents()) {
 			final boolean componentIsTimezone = VTimeZone.VTIMEZONE.equals(c.getName());
 			if(componentIsTimezone && existingTimezones.containsKey(((VTimeZone) c).getTimeZoneId().getValue())) {
 				// don't add this timezone, we've already got a copy
@@ -875,8 +872,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 			}
 		}
 		// 3rd: iterate over the right
-		for(Iterator<?> i = right.getComponents().iterator(); i.hasNext();) {
-			Component c = (Component) i.next();
+		for (final var c: right.getComponents()) {
 			if(VTimeZone.VTIMEZONE.equals(c.getName()) && existingTimezones.containsKey(((VTimeZone) c).getTimeZoneId().getValue())) {
 				// don't add this timezone, we've already got a copy
 			} else {
@@ -942,7 +938,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	 * Returns the {@link CalendarWithURI} in the visitor's account for the event
 	 * with the specified start, end and eventuid.
 	 * 
-	 * @param owner
+	 * @param visitor owner
 	 * @param startTime
 	 * @param endTime
 	 * @param eventUid
@@ -983,7 +979,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	 * Store a new calendar using CalDAV PUT.
 	 * 
 	 * @param eventOwner
-	 * @param event
+	 * @param calendar
 	 * @return
 	 * @throws HttpException
 	 * @throws IOException
@@ -1098,18 +1094,17 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	/**
 	 * This method will inspect {@link IScheduleVisitor} {@link Attendee}s among the {@link SchedulingAssistantAppointment}s
 	 * in the {@link Calendar} argument.
-	 * If an {@link Attendee} on an {@link SchedulingAssistantAppointment} has {@link Partstat#DECLINED}, the appointment
+	 * If an {@link Attendee} on an {@link SchedulingAssistantAppointment} has  Partstat#DECLINED, the appointment
 	 * will be cancelled (if one on one or lone visitor on group appt) or the attendee will be removed (group appointment
 	 * with multiple attending visitors).
 	 * 
 	 * @param calendarWithURI
-	 * @param session
 	 * @param owner
 	 * @return the calendar minus any events or attendees that have been removed.
 	 * @throws SchedulingException 
-	 * @throws StatusException 
 	 */
-	protected CalendarWithURI purgeDeclinedAttendees(CalendarWithURI calendarWithURI, ICalendarAccount owner)  {
+	protected CalendarWithURI purgeDeclinedAttendees(
+					CalendarWithURI calendarWithURI, ICalendarAccount owner)  {
 		ComponentList componentList = calendarWithURI.getCalendar().getComponents(VEvent.VEVENT);
 		if(componentList.size() != 1) {
 			return calendarWithURI;
@@ -1208,7 +1203,7 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	/**
 	 * 
 	 * @param uri
-	 * @param event
+	 * @param calendar
 	 * @return
 	 */
 	HttpPut constructPutMethod(String uri, Calendar calendar) {

@@ -19,18 +19,6 @@
 
 package org.jasig.schedassist.impl.owner;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NavigableSet;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.sql.DataSource;
-
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,11 +30,26 @@ import org.jasig.schedassist.model.IScheduleOwner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NavigableSet;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import javax.sql.DataSource;
 
 /**
  * Spring JDBC backed implementation of {@link AvailableScheduleDao}.
@@ -60,7 +63,7 @@ implements AvailableScheduleDao {
 
 	private Log LOG = LogFactory.getLog(this.getClass());
 
-	private SimpleJdbcTemplate simpleJdbcTemplate;
+	private NamedParameterJdbcTemplate simpleJdbcTemplate;
 	private ApplicationEventPublisher applicationEventPublisher;
 	
 	/**
@@ -68,7 +71,7 @@ implements AvailableScheduleDao {
 	 */
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
-		this.simpleJdbcTemplate = new SimpleJdbcTemplate(dataSource);
+		this.simpleJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	}
 	/**
 	 * @param applicationEventPublisher the applicationEventPublisher to set
@@ -129,9 +132,13 @@ implements AvailableScheduleDao {
 	public void clearAllBlocks(final IScheduleOwner owner) {
 		// delete all old blocks
 		LOG.warn("issuing clearAllBlocks for owner " + owner);
+		MapSqlParameterSource params = new MapSqlParameterSource();
+
+		params.addValue("ownerId", owner.getId());
+
 		int rowsUpdated = this.simpleJdbcTemplate.update(
-				"delete from schedules where owner_id = ?",
-				owner.getId());
+				"delete from schedules where owner_id = :ownerId",
+				params);
 		LOG.warn("deleted " + rowsUpdated + " for owner " + owner);
 	}
 
@@ -328,12 +335,20 @@ implements AvailableScheduleDao {
 		// retrieve all blocks for the day.
 		Date startOfDay = DateUtils.truncate(referenceDay, Calendar.DATE);
 		Date endOfDay = DateUtils.addDays(startOfDay, 1);
+
+		MapSqlParameterSource params = new MapSqlParameterSource();
+
+		params.addValue("ownerId", owner.getId())
+					.addValue("start", startOfDay)
+					.addValue("end", endOfDay);
+
 		List<PersistenceAvailableBlock> scheduleRows = this.simpleJdbcTemplate.query(
-				"select * from schedules where owner_id = ? and start_time >= ? and end_time < ?", 
-				new PersistenceAvailableBlockRowMapper(), 
-				owner.getId(),
-				startOfDay,
-				endOfDay);
+				"select * from schedules " +
+								"where owner_id = :ownerId and " +
+								"start_time >= :start and " +
+								"end_time < :end",
+				params,
+				new PersistenceAvailableBlockRowMapper());
 		SortedSet<AvailableBlock> availableBlocks = new TreeSet<AvailableBlock>();
 		for(PersistenceAvailableBlock row : scheduleRows) {
 			availableBlocks.add(AvailableBlockBuilder.createBlock(row.getStartTime(), row.getEndTime(), row.getVisitorLimit(), row.getMeetingLocation()));
@@ -357,7 +372,11 @@ implements AvailableScheduleDao {
         	Date priorTo = DateUtils.truncate(
 				DateUtils.addDays(new Date(), -daysPrior),
 				Calendar.DATE);
-        	int rowCount = this.simpleJdbcTemplate.update("delete from schedules where end_time < ?", priorTo);
+
+					MapSqlParameterSource params = new MapSqlParameterSource();
+
+					params.addValue("end", priorTo);
+        	int rowCount = this.simpleJdbcTemplate.update("delete from schedules where end_time < ?", params);
         	LOG.warn("purged " + rowCount + " rows from schedules table with end_time values prior to: " + priorTo);
         	return rowCount;
         } else {
@@ -374,13 +393,16 @@ implements AvailableScheduleDao {
 	 */
 	protected int internalStoreBlock(final PersistenceAvailableBlock scheduleBlock) {
 		try {
+			BeanPropertySqlParameterSource params =
+							new BeanPropertySqlParameterSource(scheduleBlock);
+
 			return this.simpleJdbcTemplate.update(
-					"insert into schedules (owner_id, start_time, end_time, visitor_limit, meeting_location) values (?, ?, ?, ?, ?)", 
-					scheduleBlock.getOwnerId(), 
-					scheduleBlock.getStartTime(), 
-					scheduleBlock.getEndTime(),
-					scheduleBlock.getVisitorLimit(),
-					scheduleBlock.getMeetingLocation());
+					"insert into schedules (owner_id, start_time, end_time, visitor_limit, meeting_location) " +
+									"values (:ownerId, " +
+									":startTime, " +
+									":endTime, " +
+									":visitorLimit, :meetingLocation)",
+					params);
 		} catch (DataIntegrityViolationException e) {
 			LOG.warn("ignoring attempt to insert duplicate row", e);
 			return 0;
@@ -389,7 +411,7 @@ implements AvailableScheduleDao {
 
 	/**
 	 * Inserts all of the arguments into the schedules table using
-	 * {@link SimpleJdbcTemplate#batchUpdate(String, SqlParameterSource[])}.
+	 * {@link JdbcTemplate#update(String, SqlParameterSource[])}.
 	 * 
 	 * @param blocks
 	 */
@@ -408,10 +430,14 @@ implements AvailableScheduleDao {
 	 * @return 
 	 */
 	protected SortedSet<AvailableBlock> internalRetrieveSchedule(final IScheduleOwner owner) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+
+		params.addValue("ownerId", owner.getId());
+
 		List<PersistenceAvailableBlock> scheduleRows = this.simpleJdbcTemplate
-		.query("select * from schedules where owner_id = ?", 
-				new PersistenceAvailableBlockRowMapper(), 
-				owner.getId());
+		.query("select * from schedules where owner_id = :ownerId",
+				params,
+				new PersistenceAvailableBlockRowMapper());
 
 		SortedSet<AvailableBlock> availableBlocks = new TreeSet<AvailableBlock>();
 		for(PersistenceAvailableBlock row : scheduleRows) {
@@ -456,9 +482,13 @@ implements AvailableScheduleDao {
 	private void replaceSchedule(final IScheduleOwner owner, final SortedSet<AvailableBlock> blocks) {
 		LOG.debug("replacing schedule for owner " + owner + "; argument contains " + blocks.size() + " blocks");
 		// delete all old blocks
+		MapSqlParameterSource params = new MapSqlParameterSource();
+
+		params.addValue("ownerId", owner.getId());
+
 		int rowsUpdated = this.simpleJdbcTemplate.update(
-				"delete from schedules where owner_id = ?",
-				owner.getId());
+				"delete from schedules where owner_id = :ownerId",
+				params);
 		LOG.debug("deleted " + rowsUpdated + " for owner " + owner.getId());
 
 		// persist the recombined set

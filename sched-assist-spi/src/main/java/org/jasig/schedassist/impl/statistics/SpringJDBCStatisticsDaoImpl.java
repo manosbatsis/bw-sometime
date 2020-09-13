@@ -19,6 +19,19 @@
 
 package org.jasig.schedassist.impl.statistics;
 
+import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jasig.schedassist.impl.EventType;
+import org.jasig.schedassist.impl.owner.OwnerDao;
+import org.jasig.schedassist.model.CommonDateOperations;
+import org.jasig.schedassist.model.IScheduleOwner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.stereotype.Service;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -28,19 +41,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.sql.DataSource;
-
-import org.apache.commons.lang.time.DateUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jasig.schedassist.impl.EventType;
-import org.jasig.schedassist.impl.owner.OwnerDao;
-import org.jasig.schedassist.model.CommonDateOperations;
-import org.jasig.schedassist.model.IScheduleOwner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
-import org.springframework.stereotype.Service;
 
 /**
  *  {@link SimpleJdbcTemplate} backed {@link StatisticsDao}.
@@ -54,14 +54,14 @@ public class SpringJDBCStatisticsDaoImpl implements StatisticsDao {
 
 	private static final Log LOG = LogFactory.getLog(SpringJDBCStatisticsDaoImpl.class);
 	private OwnerDao ownerDao;
-	private SimpleJdbcTemplate simpleJdbcTemplate;
+	private JdbcTemplate simpleJdbcTemplate;
 	/**
 	 * 
 	 * @param dataSource
 	 */
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
-		this.simpleJdbcTemplate = new SimpleJdbcTemplate(dataSource);
+		this.simpleJdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	/**
 	 * @param ownerDao the ownerDao to set

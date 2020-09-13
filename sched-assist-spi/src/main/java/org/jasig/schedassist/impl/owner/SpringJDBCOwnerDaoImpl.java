@@ -19,12 +19,6 @@
 
 package org.jasig.schedassist.impl.owner;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
@@ -38,11 +32,17 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.support.incrementer.DataFieldMaxValueIncrementer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.sql.DataSource;
 
 /**
  * Spring JDBC backed implementation of {@link OwnerDao}.
@@ -55,7 +55,7 @@ public class SpringJDBCOwnerDaoImpl implements
 		OwnerDao {
 
 	private Log LOG = LogFactory.getLog(this.getClass());
-	private SimpleJdbcTemplate simpleJdbcTemplate;
+	private JdbcTemplate simpleJdbcTemplate;
 	private DataFieldMaxValueIncrementer ownerIdSequence;
 	private OwnerAuthorization ownerAuthorization;
 	private ICalendarAccountDao calendarAccountDao;
@@ -66,7 +66,7 @@ public class SpringJDBCOwnerDaoImpl implements
 	 */
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
-		this.simpleJdbcTemplate = new SimpleJdbcTemplate(dataSource);
+		this.simpleJdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	/**
 	 * @param ownerIdSequence the ownerIdSequence to set

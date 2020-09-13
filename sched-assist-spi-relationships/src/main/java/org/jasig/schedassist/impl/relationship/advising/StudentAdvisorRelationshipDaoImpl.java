@@ -19,12 +19,6 @@
 
 package org.jasig.schedassist.impl.relationship.advising;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.sql.DataSource;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,7 +34,13 @@ import org.jasig.schedassist.model.Preferences;
 import org.jasig.schedassist.model.Relationship;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.sql.DataSource;
 
 
 /**
@@ -71,7 +71,7 @@ implements RelationshipDao {
 
 	private Log LOG = LogFactory.getLog(this.getClass());
 	
-	private SimpleJdbcTemplate simpleJdbcTemplate;
+	private JdbcTemplate simpleJdbcTemplate;
 	private String studentEmplidAttributeName = "wisceduisisstudentemplid";
 	private String advisorEmplidAttributeName = "wisceduisisadvisoremplid";
 	private ICalendarAccountDao calendarAccountDao;
@@ -84,7 +84,7 @@ implements RelationshipDao {
 	 */
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
-		this.simpleJdbcTemplate = new SimpleJdbcTemplate(dataSource);
+		this.simpleJdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	/**
 	 * @param calendarAccountDao the calendarAccountDao to set

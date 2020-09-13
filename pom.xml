@@ -7,11 +7,65 @@
 	<name>Bedework Sometime Parent</name>
 	<description>The root project definition for the Bedework Sometime project.</description>
 
-	<parent>
-		<groupId>org.jasig.parent</groupId>
-		<artifactId>jasig-parent</artifactId>
-		<version>33</version>
-	</parent>
+	<properties>
+		<!-- Maven Plugin Versions -->
+		<maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
+		<maven.source.plugin.version>2.1.2</maven.source.plugin.version>
+		<maven.jaxb.plugin.version>2.5.0</maven.jaxb.plugin.version>
+
+		<!-- Bedework Versions -->
+
+
+		<ical4j.groupId>org.bedework.ical4j</ical4j.groupId>
+		<ical4j.artifactId>ical4j</ical4j.artifactId>
+		<ical4j.version>2.0.12</ical4j.version>
+
+		<commons-codec.version>1.5</commons-codec.version>
+		<commons-fileupload.version>1.3.3</commons-fileupload.version>
+		<commons-lang.version>2.6</commons-lang.version>
+		<flywaydb.version>3.1</flywaydb.version>
+		<hsqldb.version>2.5.1</hsqldb.version>
+		<jasig.resourceserver.version>1.0.24</jasig.resourceserver.version>
+		<java.jaxb.api.version>2.3.0</java.jaxb.api.version>
+		<javax.xml.soap-api.version>1.4.0</javax.xml.soap-api.version>
+		<javax.annotation.version>1.3.2</javax.annotation.version>
+		<jaxws-api.version>2.3.1</jaxws-api.version>
+		<junit.version>4.13</junit.version>
+		<slf4j.version>1.6.6</slf4j.version>
+		<spring-framework.version>5.2.1.RELEASE</spring-framework.version>
+		<spring-ldap.version>2.3.3.RELEASE</spring-ldap.version>
+		<spring-security.version>5.3.4.RELEASE</spring-security.version>
+		<spring-webflow.version>2.5.1.RELEASE</spring-webflow.version>
+		<spring-webmvc-portlet.version>4.3.28.RELEASE</spring-webmvc-portlet.version>
+		<spring-ws.version>3.0.9.RELEASE</spring-ws.version>
+		<spring-ws-tiger.version>1.5.10</spring-ws-tiger.version>
+	</properties>
+
+	<scm>
+		<connection>scm:git:git@github.com:Bedework/bw-sometime.git</connection>
+		<developerConnection>scm:git:git@github.com:Bedework/bw-sometime.git</developerConnection>
+		<url>https://github.com/Bedework/bw-sometime</url>
+	</scm>
+
+	<issueManagement>
+		<system>Github Issues</system>
+		<url>https://github.com/Bedework/bw-sometime/issues</url>
+	</issueManagement>
+
+	<developers>
+		<developer>
+			<email>nicholas.blair@wisc.edu</email>
+			<name>Nicholas Blair</name>
+			<organization>University of Wisconsin-Madison</organization>
+		</developer>
+		<developer>
+			<name>Mike Douglass</name>
+			<organization>
+				Bedework
+			</organization>
+			<organizationUrl>http://bedework.com/</organizationUrl>
+		</developer>
+	</developers>
 
 	<modules>
 		<module>sched-assist-api</module>
@@ -25,47 +79,54 @@
 		<module>bw-sometime-database</module>
 	</modules>
 
-	<issueManagement>
-		<system>Github Issues</system>
-		<url>https://github.com/Bedework/bw-sometime/issues</url>
-	</issueManagement>
-	<scm>
-		<connection>scm:git:git@github.com:Bedework/bw-sometime.git</connection>
-		<developerConnection>scm:git:git@github.com:Bedework/bw-sometime.git</developerConnection>
-		<url>https://github.com/Bedework/bw-sometime</url>
-	</scm>
-
-	<developers>
-		<developer>
-			<email>nicholas.blair@wisc.edu</email>
-			<name>Nicholas Blair</name>
-			<organization>University of Wisconsin-Madison</organization>
-		</developer>
-	</developers>
-
-	<properties>
-		<flywaydb.version>3.1</flywaydb.version>
-		<hsqldb.version>2.2.9</hsqldb.version>
-		<jasig.resourceserver.version>1.0.24</jasig.resourceserver.version>
-		<slf4j.version>1.6.6</slf4j.version>
-		<spring.framework.version>3.2.12.RELEASE</spring.framework.version>
-		<spring-ldap.version>1.3.2.RELEASE</spring-ldap.version>
-		<spring-security.version>3.2.4.RELEASE</spring-security.version>
-		<spring-webflow.version>2.0.9.RELEASE</spring-webflow.version>
-		<spring-ws.version>1.5.9</spring-ws.version>
-	</properties>
-
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>javax.annotation</groupId>
+				<artifactId>javax.annotation-api</artifactId>
+				<version>${javax.annotation.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.xml.bind</groupId>
+				<artifactId>jaxb-api</artifactId>
+				<version>${java.jaxb.api.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.xml.soap</groupId>
+				<artifactId>javax.xml.soap-api</artifactId>
+				<version>${javax.xml.soap-api.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.xml.ws</groupId>
+				<artifactId>jaxws-api</artifactId>
+				<version>${jaxws-api.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.glassfish.jaxb</groupId>
+				<artifactId>jaxb-runtime</artifactId>
+				<version>2.3.2</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sun.activation</groupId>
+				<artifactId>jakarta.activation</artifactId>
+				<version>1.2.1</version>
+			</dependency>
+
 			<dependency>
 				<groupId>com.googlecode.ehcache-spring-annotations</groupId>
 				<artifactId>ehcache-spring-annotations</artifactId>
 				<version>1.1.2</version>
 			</dependency>
+
 			<dependency>
-				<groupId>org.mnode.ical4j</groupId>
-				<artifactId>ical4j</artifactId>
-				<version>1.0.3</version>
+				<groupId>${ical4j.groupId}</groupId>
+				<artifactId>${ical4j.artifactId}</artifactId>
+				<version>${ical4j.version}</version>
 				<exclusions>
 					<exclusion>
 						<artifactId>commons-logging</artifactId>
@@ -77,71 +138,85 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
-				<version>1.4</version>
+				<version>${commons-codec.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
 				<version>1.4</version>
 			</dependency>
+
 			<dependency>
 				<groupId>commons-lang</groupId>
 				<artifactId>commons-lang</artifactId>
-				<version>2.6</version>
+				<version>${commons-lang.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging</artifactId>
 				<version>1.1.1</version>
 			</dependency>
+
 			<dependency>
 				<groupId>commons-pool</groupId>
 				<artifactId>commons-pool</artifactId>
 				<version>1.5.6</version>
 			</dependency>
+
 			<dependency>
 				<groupId>commons-fileupload</groupId>
 				<artifactId>commons-fileupload</artifactId>
-				<version>1.2.1</version>
+				<version>${commons-fileupload.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>commons-httpclient</groupId>
 				<artifactId>commons-httpclient</artifactId>
 				<version>3.1</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
 				<version>4.1.2</version>
 			</dependency>
+
 			<dependency>
 				<groupId>net.sf.ehcache</groupId>
 				<artifactId>ehcache-core</artifactId>
 				<version>2.1.0</version>
 			</dependency>
+
 			<dependency>
 				<groupId>javax.inject</groupId>
 				<artifactId>javax.inject</artifactId>
 				<version>1</version>
 			</dependency>
+
 			<dependency>
 				<groupId>net.sf.opencsv</groupId>
 				<artifactId>opencsv</artifactId>
 				<version>2.1</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-core</artifactId>
 				<version>${flywaydb.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>${slf4j.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
@@ -153,6 +228,7 @@
 				<artifactId>jcl-over-slf4j</artifactId>
 				<version>${slf4j.version}</version>
 			</dependency>
+
 			<dependency>
 				<artifactId>log4j</artifactId>
 				<groupId>log4j</groupId>
@@ -172,66 +248,79 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-aop</artifactId>
-				<version>${spring.framework.version}</version>
+				<version>${spring-framework.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-asm</artifactId>
-				<version>${spring.framework.version}</version>
+				<version>${spring-framework.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-beans</artifactId>
-				<version>${spring.framework.version}</version>
+				<version>${spring-framework.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
-				<version>${spring.framework.version}</version>
+				<version>${spring-framework.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
-				<version>${spring.framework.version}</version>
+				<version>${spring-framework.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context-support</artifactId>
-				<version>${spring.framework.version}</version>
+				<version>${spring-framework.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-jdbc</artifactId>
-				<version>${spring.framework.version}</version>
+				<version>${spring-framework.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-test</artifactId>
-				<version>${spring.framework.version}</version>
+				<version>${spring-framework.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-tx</artifactId>
-				<version>${spring.framework.version}</version>
+				<version>${spring-framework.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
-				<version>${spring.framework.version}</version>
+				<version>${spring-framework.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc-portlet</artifactId>
-				<version>${spring.framework.version}</version>
+				<version>${spring-webmvc-portlet.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework.ldap</groupId>
 				<artifactId>spring-ldap-core</artifactId>
 				<version>${spring-ldap.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework.ldap</groupId>
 				<artifactId>spring-ldap-core-tiger</artifactId>
@@ -253,6 +342,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-web</artifactId>
@@ -268,6 +358,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-config</artifactId>
@@ -283,6 +374,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-ldap</artifactId>
@@ -298,11 +390,13 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-taglibs</artifactId>
 				<version>${spring-security.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework.webflow</groupId>
 				<artifactId>spring-webflow</artifactId>
@@ -310,20 +404,23 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.springframework.ws</groupId>
+				<groupId>org.springframework</groupId>
 				<artifactId>spring-oxm</artifactId>
-				<version>${spring-ws.version}</version>
+				<version>${spring-framework.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework.ws</groupId>
 				<artifactId>spring-ws-core</artifactId>
 				<version>${spring-ws.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework.ws</groupId>
 				<artifactId>spring-ws-core-tiger</artifactId>
-				<version>${spring-ws.version}</version>
+				<version>${spring-ws-tiger.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework.ws</groupId>
 				<artifactId>spring-ws-security</artifactId>
@@ -335,6 +432,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+
 			<dependency>
 				<groupId>org.apache.ws.commons.schema</groupId>
 				<artifactId>XmlSchema</artifactId>
@@ -352,6 +450,7 @@
 				<artifactId>portlet-api</artifactId>
 				<version>1.0</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.apache.pluto</groupId>
 				<artifactId>pluto-taglib</artifactId>
@@ -369,11 +468,13 @@
 				<artifactId>quartz</artifactId>
 				<version>1.5.2</version>
 			</dependency>
+
 			<dependency>
 				<groupId>javax.mail</groupId>
 				<artifactId>mail</artifactId>
 				<version>1.4.1</version>
 			</dependency>
+
 			<dependency>
 				<groupId>ognl</groupId>
 				<artifactId>ognl</artifactId>
@@ -385,16 +486,19 @@
 				<artifactId>servlet-api</artifactId>
 				<version>2.5</version>
 			</dependency>
+
 			<dependency>
 				<groupId>javax.servlet.jsp</groupId>
 				<artifactId>jsp-api</artifactId>
 				<version>2.0</version>
 			</dependency>
+
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>jstl</artifactId>
 				<version>1.1.2</version>
 			</dependency>
+
 			<dependency>
 				<groupId>taglibs</groupId>
 				<artifactId>standard</artifactId>
@@ -419,6 +523,7 @@
 				<version>${jasig.resourceserver.version}</version>
 				<type>war</type>
 			</dependency>
+
 			<dependency>
 				<groupId>org.jasig.resourceserver</groupId>
 				<artifactId>resource-server-utils</artifactId>
@@ -440,20 +545,21 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.11</version>
+				<version>${junit.version}</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.easymock</groupId>
 				<artifactId>easymock</artifactId>
 				<version>2.5.2</version>
 			</dependency>
+
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-all</artifactId>
 				<version>1.8.5</version>
 			</dependency>
 		</dependencies>
-
 	</dependencyManagement>
 
 	<build>
@@ -507,9 +613,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.plugin.version}</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<showDeprecation>false</showDeprecation>
+					<showWarnings>false</showWarnings>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -521,8 +628,9 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>com.mycila.maven-license-plugin</groupId>
-				<artifactId>maven-license-plugin</artifactId>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>3.0</version>
 				<configuration>
 					<excludes>
 						<exclude>bootstrap/local-hsqldb/*.*</exclude>

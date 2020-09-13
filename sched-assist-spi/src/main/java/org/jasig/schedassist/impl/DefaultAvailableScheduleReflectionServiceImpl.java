@@ -19,11 +19,6 @@
 
 package org.jasig.schedassist.impl;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.sql.DataSource;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.schedassist.ICalendarDataDao;
@@ -34,13 +29,18 @@ import org.jasig.schedassist.model.IScheduleOwner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.sql.DataSource;
 
 /**
  * Default implementation of {@link AvailableScheduleReflectionService}.
@@ -51,7 +51,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 public class DefaultAvailableScheduleReflectionServiceImpl implements AvailableScheduleReflectionService {
 
 	protected static final Log LOG = LogFactory.getLog(DefaultAvailableScheduleReflectionServiceImpl.class);
-	private SimpleJdbcTemplate simpleJdbcTemplate;
+	private JdbcTemplate simpleJdbcTemplate;
 	private ICalendarDataDao calendarDataDao;
 	private AvailableScheduleDao availableScheduleDao;
 	private OwnerDao ownerDao;
@@ -62,7 +62,7 @@ public class DefaultAvailableScheduleReflectionServiceImpl implements AvailableS
 	 */
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
-		this.simpleJdbcTemplate = new SimpleJdbcTemplate(dataSource);
+		this.simpleJdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	/**
 	 * @param platformTransactionManager the platformTransactionManager to set

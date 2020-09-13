@@ -19,14 +19,13 @@
 
 package org.jasig.schedassist.impl.relationship.advising;
 
+import org.springframework.jdbc.core.RowMapper;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-
 /**
- * {@link ParameterizedRowMapper} implementation for {@link StudentAdvisorAssignment}.
+ * {@link RowMapper} implementation for {@link StudentAdvisorAssignment}.
  * 
  * Expects the following column names:
  * 
