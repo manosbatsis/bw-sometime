@@ -19,6 +19,9 @@
 
 package org.jasig.schedassist.impl.owner;
 
+import org.jasig.schedassist.model.ICalendarAccount;
+import org.jasig.schedassist.model.IScheduleOwner;
+
 /**
  * Exception that may be thrown when an action that requires
  * completed {@link IScheduleOwner} registration is performed

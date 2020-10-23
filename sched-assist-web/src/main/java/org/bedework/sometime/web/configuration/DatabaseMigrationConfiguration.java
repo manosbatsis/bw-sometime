@@ -3,13 +3,8 @@
  */
 package org.bedework.sometime.web.configuration;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.sql.DataSource;
-
 import org.bedework.sometime.database.migrations.FlywayDatabaseMigrations;
+
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +12,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
+
+import java.util.Arrays;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.sql.DataSource;
 
 /**
  * {@link Configuration} used to enable database migrations; active only when the "db-migration"
@@ -32,7 +33,7 @@ import org.springframework.core.env.Environment;
 @Profile("db-migration")
 public class DatabaseMigrationConfiguration {
 
-	private static final List<String> SUPPORTED_DATABASES = Arrays.asList("hsqldb", "postgresql", "oracle");
+	private static final List<String> SUPPORTED_DATABASES = Arrays.asList("h2", "hsqldb", "postgresql", "oracle");
 	@Inject
 	private Environment environment;
 	/**

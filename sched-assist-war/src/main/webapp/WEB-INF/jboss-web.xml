@@ -5,13 +5,13 @@
 
   <security-domain>java:/jaas/${app.security.domain}</security-domain>
 
-  <!--
   <resource-ref>
-    <res-ref-name>jdbc/calDB</res-ref-name>
+    <res-ref-name>jdbc/sometimeDB</res-ref-name>
     <res-type>javax.sql.DataSource</res-type>
-    <jndi-name>java:${org.bedework.global.jboss.db.datasource.jndiname}</jndi-name>
+    <jndi-name>java:${org.bedework.global.jboss.sometime.datasource.jndiname}</jndi-name>
   </resource-ref>
 
+  <!--
   <resource-ref>
     <res-ref-name>jms/BedeworkConnectionFactory</res-ref-name>
     <res-type>javax.jms.ConnectionFactory</res-type>

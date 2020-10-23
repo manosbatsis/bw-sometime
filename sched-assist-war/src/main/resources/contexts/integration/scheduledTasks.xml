@@ -23,6 +23,7 @@
 <beans	xmlns="http://www.springframework.org/schema/beans"
 				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 				xmlns:context="http://www.springframework.org/schema/context"
+				xmlns:jee="http://www.springframework.org/schema/jee"
 				xmlns:tx="http://www.springframework.org/schema/tx"
 				xmlns:task="http://www.springframework.org/schema/task"
 				xsi:schemaLocation="
@@ -36,7 +37,7 @@
 	<task:annotation-driven executor="taskExecutor" scheduler="taskScheduler"/>
 
 	<bean id="availableSchedulePurgeCronTrigger"
-				class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+				class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<!-- run every morning at 3 AM -->
 		<!--
     <property name="cronExpression" value="0 0 3 * * ?" />
@@ -44,7 +45,8 @@
 		<!-- run on the 45s in dev -->
 		<property name="cronExpression" value="0 45 * * * ?" />
 		<property name="jobDetail">
-			<bean id="availableSchedulePurgeExpiredJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+			<bean id="availableSchedulePurgeExpiredJobDetail"
+						class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 				<property name="targetObject" ref="availableScheduleDao"/>
 				<property name="targetMethod" value="purgeExpiredBlocks"/>
 				<property name="arguments">
@@ -54,14 +56,20 @@
 			</bean>
 		</property>
 	</bean>
-	<bean id="csvRelationshipReloadSimpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+
+	<bean id="availableScheduleDao"
+				class="org.jasig.schedassist.impl.owner.SpringJDBCAvailableScheduleDaoImpl"/>
+
+	<bean id="csvRelationshipReloadSimpleTrigger"
+				class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 		<!-- wait 20 minutes before starting repeated execution -->
 		<property name="startDelay" value="1200000" />
 		<!-- run every 1800 seconds (30 minutes) -->
 		<property name="repeatInterval" value="1800000" />
 		<property name="jobDetail">
 			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-				<property name="targetObject" ref="csvRelationshipDataSource"/>
+				<property name="targetObject"
+									ref="csvRelationshipDataSource"/>
 				<property name="targetMethod" value="reloadData"/>
 				<property name="concurrent" value="false"/>
 			</bean>
@@ -76,5 +84,4 @@
 			</list>
 		</property>
 	</bean>
-
 </beans>
