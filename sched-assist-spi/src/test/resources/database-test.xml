@@ -45,6 +45,11 @@
 		<property name="password"><value></value></property>
 		<property name="suppressClose" value="true"/>
 	</bean>
+	<bean id="database"
+				class="org.jasig.schedassist.impl.database.HsqldbDatabase">
+		<constructor-arg name="dataSource" ref="dataSource"/>
+	</bean>
+	<!--
 	<bean id="ownerIdSequenceGenerator" class="org.springframework.jdbc.support.incrementer.HsqlSequenceMaxValueIncrementer">
 		<property name="dataSource" ref="dataSource"/>
 		<property name="incrementerName" value="ownerid_seq"/>
@@ -59,7 +64,8 @@
 		<property name="dataSource" ref="dataSource"/>
 		<property name="incrementerName" value="reminderid_seq"/>
 		<qualifier value="reminders"/>
-	</bean>  
+	</bean>
+	-->
 	
 	<bean id="destroyDdl" class="org.springframework.core.io.ClassPathResource">
 		<constructor-arg><value>schedassist-hsql-destroy.ddl</value></constructor-arg>

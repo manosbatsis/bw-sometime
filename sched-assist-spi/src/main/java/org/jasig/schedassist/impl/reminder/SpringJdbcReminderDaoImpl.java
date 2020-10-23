@@ -24,10 +24,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.schedassist.model.AvailableBlock;
+import org.jasig.schedassist.model.Database;
 import org.jasig.schedassist.model.ICalendarAccount;
 import org.jasig.schedassist.model.IScheduleOwner;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -47,28 +47,31 @@ import javax.sql.DataSource;
  * @version $Id: SpringJdbcReminderDaoImpl.java $
  */
 @Repository
-class SpringJdbcReminderDaoImpl implements ReminderDao {
-
+public class SpringJdbcReminderDaoImpl implements ReminderDao {
 	private JdbcTemplate simpleJdbcTemplate;
 	private DataFieldMaxValueIncrementer reminderIdSequence;
-	private Log LOG = LogFactory.getLog(this.getClass());
+	private final Log LOG = LogFactory.getLog(this.getClass());
 	private String identifyingAttributeName = "uid";
+	private Database database;
+
 	/**
 	 * 
-	 * @param ds
+	 * @param ds the dataSource to set
 	 */
 	@Autowired
-	public void setDataSource(DataSource ds) {
-		this.simpleJdbcTemplate = new JdbcTemplate(ds);
+	public void setDataSource(final DataSource ds) {
+		simpleJdbcTemplate = new JdbcTemplate(ds);
 	}
+
 	/**
-	 * @param reminderIdSequence the reminderIdSequence to set
+	 * @param val the database to set
 	 */
 	@Autowired
-	public void setReminderIdSequence(
-			@Qualifier("reminders") DataFieldMaxValueIncrementer reminderIdSequence) {
-		this.reminderIdSequence = reminderIdSequence;
+	public void setDatabase(final Database val) {
+		this.database = val;
+		reminderIdSequence = database.reminderIdSequence();
 	}
+
 	/**
 	 * 
 	 * @param identifyingAttributeName
@@ -84,14 +87,14 @@ class SpringJdbcReminderDaoImpl implements ReminderDao {
 	public String getIdentifyingAttributeName() {
 		return identifyingAttributeName;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.impl.reminder.ReminderDao#createEventReminder(org.jasig.schedassist.model.IScheduleOwner, org.jasig.schedassist.model.ICalendarAccount, org.jasig.schedassist.model.AvailableBlock, net.fortuna.ical4j.model.component.VEvent, java.util.Date)
-	 */
+
 	@Override
 	@Transactional
 	public IReminder createEventReminder(IScheduleOwner owner,
-			ICalendarAccount recipient, AvailableBlock appointmentBlock, VEvent event, Date sendTime) {
+																			 ICalendarAccount recipient,
+																			 AvailableBlock appointmentBlock,
+																			 VEvent event,
+																			 Date sendTime) {
 		final String recipientIdentifier = getIdentifyingAttribute(recipient);
 		long newReminderId = this.reminderIdSequence.nextLongValue();
 		int rows = this.simpleJdbcTemplate.update("insert into reminders (reminder_id,owner_id,recipient,event_start,event_end,send_time) values (?,?,?,?,?,?)",
@@ -111,10 +114,6 @@ class SpringJdbcReminderDaoImpl implements ReminderDao {
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.impl.reminder.ReminderDao#deleteEventReminder(org.jasig.schedassist.impl.reminder.IReminder)
-	 */
 	@Override
 	@Transactional
 	public void deleteEventReminder(IReminder reminder) {
@@ -124,10 +123,6 @@ class SpringJdbcReminderDaoImpl implements ReminderDao {
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.impl.reminder.ReminderDao#getPendingReminders()
-	 */
 	@Override
 	public List<PersistedReminderImpl> getPendingReminders() {
 		Date now = new Date();
@@ -138,10 +133,7 @@ class SpringJdbcReminderDaoImpl implements ReminderDao {
 		
 		return persisted;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.impl.reminder.ReminderDao#getReminders(org.jasig.schedassist.model.IScheduleOwner, org.jasig.schedassist.model.AvailableBlock)
-	 */
+
 	@Override
 	public List<PersistedReminderImpl> getReminders(IScheduleOwner owner,
 			AvailableBlock appointmentBlock) {
@@ -154,10 +146,7 @@ class SpringJdbcReminderDaoImpl implements ReminderDao {
 		
 		return persisted;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.impl.reminder.ReminderDao#getReminder(org.jasig.schedassist.model.IScheduleOwner, org.jasig.schedassist.model.ICalendarAccount, org.jasig.schedassist.model.AvailableBlock)
-	 */
+
 	@Override
 	public PersistedReminderImpl getReminder(IScheduleOwner owner,
 			ICalendarAccount recipient, AvailableBlock appointmentBlock) {

@@ -33,23 +33,35 @@
         	http://www.springframework.org/schema/webflow-config
         	http://www.springframework.org/schema/webflow-config/spring-webflow-config.xsd">
     
-	<context:component-scan base-package="org.jasig.schedassist.web"/>
-	<context:property-placeholder location="classpath:/scheduling-assistant-default.properties" />
-	<context:property-placeholder location="classpath:/scheduling-assistant.properties" ignore-resource-not-found="true"/>
+	<context:component-scan
+					base-package="org.jasig.schedassist.web"/>
+
+	<context:property-placeholder
+					location="classpath:/scheduling-assistant-default.properties" />
+
+	<context:property-placeholder
+					location="classpath:/scheduling-assistant.properties"
+					ignore-resource-not-found="true"/>
 	
-	<bean id="handlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+	<bean id="handlerMapping"
+				class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
 		<property name="alwaysUseFullPath" value="true"/>
 		<property name="order" value="1"/>
 	</bean>
-	<bean id="flowHandlerMapping" class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping">
+
+	<bean id="flowHandlerMapping"
+				class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping">
 	   <property name="flowRegistry" ref="flowRegistry"/>
 	   <property name="order" value="2"/>
 	</bean>
 	
-	<bean id="handlerAdapter" class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+	<bean id="handlerAdapter"
+				class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
 		<property name="alwaysUseFullPath" value="true"/>
 	</bean>
-	<bean id="flowHandlerAdapter" class="org.springframework.webflow.mvc.servlet.FlowHandlerAdapter">
+
+	<bean id="flowHandlerAdapter"
+				class="org.springframework.webflow.mvc.servlet.FlowHandlerAdapter">
 	   <property name="flowExecutor" ref="flowExecutor"/>
 	</bean>
 	
@@ -57,7 +69,9 @@
 	<webflow:flow-registry id="flowRegistry">
 		<webflow:flow-location path="/WEB-INF/flows/register/register.xml" />
 		<webflow:flow-location path="/WEB-INF/flows/delegate-register/delegate-register.xml" />
+
 	</webflow:flow-registry>
+
 	<webflow:flow-executor id="flowExecutor" />
 	<!-- END spring webflow configuration -->
 	

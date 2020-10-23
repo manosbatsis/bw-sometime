@@ -1,63 +1,50 @@
 /**
  * 
  */
-package org.bedework.sometime.web.configuration;
+package org.jasig.schedassist.impl.database;
 
+import org.jasig.schedassist.model.Database;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.support.incrementer.DataFieldMaxValueIncrementer;
 import org.springframework.jdbc.support.incrementer.H2SequenceMaxValueIncrementer;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
 /**
  * {@link Configuration} that provides H2 specific {@link Bean}s.
- * This configuration is activated with the "h2" Spring {@link Profile}.
+ * This bean is activated with the "h2" Spring {@link Profile}.
  * 
  * @author Nicholas Blair
+ * @author Mike Douglass
  */
-@Configuration
+@Component("database")
 @Profile("h2")
-public class H2DatabaseConfiguration {
-	private DataSource dataSource;
+public class H2Database implements Database {
+	private final DataSource dataSource;
 
 	/**
 	 * @param dataSource the dataSource to set
 	 */
 	@Autowired
-	public void setDataSource(DataSource dataSource) {
+	public H2Database(final DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 
-	/**
-	 * 
-	 * @return the {@link DataFieldMaxValueIncrementer} providing schedule owner ids
-	 */
-	@Bean
-	@Qualifier("owners")
+	@Override
 	public DataFieldMaxValueIncrementer ownerIdSequence() {
 		return new H2SequenceMaxValueIncrementer(dataSource, "ownerid_seq");
 	}
 
-	/**
-	 * 
-	 * @return the {@link DataFieldMaxValueIncrementer} providing statistic event ids
-	 */
-	@Bean
-	@Qualifier("statistics")
+	@Override
 	public DataFieldMaxValueIncrementer eventIdSequence() {
 		return new H2SequenceMaxValueIncrementer(dataSource, "eventid_seq");
 	}
 
-	/**
-	 * 
-	 * @return the {@link DataFieldMaxValueIncrementer} providing reminder ids
-	 */
-	@Bean
-	@Qualifier("reminders")
+	@Override
 	public DataFieldMaxValueIncrementer reminderIdSequence() {
 		return new H2SequenceMaxValueIncrementer(dataSource, "reminderid_seq");
 	}

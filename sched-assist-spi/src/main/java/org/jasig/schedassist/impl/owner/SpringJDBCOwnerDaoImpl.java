@@ -24,6 +24,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.schedassist.ICalendarAccountDao;
+import org.jasig.schedassist.model.Database;
 import org.jasig.schedassist.model.ICalendarAccount;
 import org.jasig.schedassist.model.IScheduleOwner;
 import org.jasig.schedassist.model.Preferences;
@@ -54,27 +55,31 @@ import javax.sql.DataSource;
 public class SpringJDBCOwnerDaoImpl implements
 		OwnerDao {
 
-	private Log LOG = LogFactory.getLog(this.getClass());
+	private final Log LOG = LogFactory.getLog(this.getClass());
 	private JdbcTemplate simpleJdbcTemplate;
 	private DataFieldMaxValueIncrementer ownerIdSequence;
 	private OwnerAuthorization ownerAuthorization;
 	private ICalendarAccountDao calendarAccountDao;
 	private String identifyingAttributeName = "uid";
+	private Database database;
 	
 	/**
 	 * @param dataSource the dataSource to set
 	 */
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
-		this.simpleJdbcTemplate = new JdbcTemplate(dataSource);
+		simpleJdbcTemplate = new JdbcTemplate(dataSource);
 	}
+
 	/**
-	 * @param ownerIdSequence the ownerIdSequence to set
+	 * @param database the database to set
 	 */
 	@Autowired
-	public void setOwnerIdSequence(@Qualifier("owners") DataFieldMaxValueIncrementer ownerIdSequence) {
-		this.ownerIdSequence = ownerIdSequence;
+	public void setDatabase(final Database database) {
+		this.database = database;
+		ownerIdSequence = database.ownerIdSequence();
 	}
+
 	/**
 	 * @param ownerAuthorization the ownerAuthorization to set
 	 */
@@ -126,10 +131,6 @@ public class SpringJDBCOwnerDaoImpl implements
 		}
 	}	
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.impl.owner.OwnerDao#removeAccount(org.jasig.schedassist.model.IScheduleOwner)
-	 */
 	@Transactional
 	@Override
 	public void removeAccount(IScheduleOwner owner) {
@@ -320,7 +321,7 @@ public class SpringJDBCOwnerDaoImpl implements
 	 * 
 	 * @param calendarAccount
 	 * @return
-	 * @throws IncorrectResultSizeDataAccessException if more than 1 corresponding {@link ScheduleOwner} is stored
+	 * @throws IncorrectResultSizeDataAccessException if more than 1 corresponding {@link IScheduleOwner} is stored
 	 */
 	protected IScheduleOwner internalLookup(final ICalendarAccount calendarAccount) {
 		final String uniqueId = calendarAccount.getCalendarUniqueId();

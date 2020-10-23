@@ -23,9 +23,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.schedassist.impl.EventType;
+import org.jasig.schedassist.model.Database;
 import org.jasig.schedassist.model.ICalendarAccount;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -48,26 +48,28 @@ import javax.sql.DataSource;
 public class AppointmentStatisticsApplicationListener implements
 		ApplicationListener<AbstractAppointmentEvent> {
 
-	private Log LOG = LogFactory.getLog(this.getClass());
+	private final Log LOG = LogFactory.getLog(this.getClass());
 	private JdbcTemplate simpleJdbcTemplate;
 	private DataFieldMaxValueIncrementer statisticsEventIdSequence;
 	private String identifyingAttributeName = "uid";
-	
+	private Database database;
+
 	/**
-	 * 
-	 * @param dataSource
+	 *
+	 * @param dataSource the dataSource to set
 	 */
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
 		this.simpleJdbcTemplate = new JdbcTemplate(dataSource);
 	}
+
 	/**
-	 * @param statisticsEventIdSequence the statisticsEventIdSequence to set
+	 * @param val the database to set
 	 */
 	@Autowired
-	public void setStatisticsEventIdSequence(
-			@Qualifier("statistics") DataFieldMaxValueIncrementer statisticsEventIdSequence) {
-		this.statisticsEventIdSequence = statisticsEventIdSequence;
+	public void setDatabase(final Database val) {
+		this.database = val;
+		statisticsEventIdSequence = database.eventIdSequence();
 	}
 	/**
 	 * 

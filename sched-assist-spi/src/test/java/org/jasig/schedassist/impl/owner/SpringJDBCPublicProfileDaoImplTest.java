@@ -19,10 +19,6 @@
 
 package org.jasig.schedassist.impl.owner;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.jasig.schedassist.ICalendarAccountDao;
 import org.jasig.schedassist.model.ICalendarAccount;
 import org.jasig.schedassist.model.IScheduleOwner;
@@ -33,6 +29,10 @@ import org.jasig.schedassist.model.PublicProfileTag;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Tests for {@link SpringJDBCPublicProfileDaoImpl}.

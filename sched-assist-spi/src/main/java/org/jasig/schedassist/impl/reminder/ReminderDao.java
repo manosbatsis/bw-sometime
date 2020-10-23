@@ -19,14 +19,13 @@
 
 package org.jasig.schedassist.impl.reminder;
 
-import java.util.Date;
-import java.util.List;
-
 import net.fortuna.ical4j.model.component.VEvent;
-
 import org.jasig.schedassist.model.AvailableBlock;
 import org.jasig.schedassist.model.ICalendarAccount;
 import org.jasig.schedassist.model.IScheduleOwner;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Package internal interface for CRUD operations on reminder records
@@ -35,7 +34,7 @@ import org.jasig.schedassist.model.IScheduleOwner;
  * @author Nicholas Blair
  * @version $Id: ReminderDao.java $
  */
-interface ReminderDao {
+public interface ReminderDao {
 
 	/**
 	 * 
