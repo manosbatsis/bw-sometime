@@ -19,11 +19,11 @@
 
 package org.jasig.schedassist.impl.owner;
 
-import java.util.Map;
-
 import org.jasig.schedassist.model.ICalendarAccount;
 import org.jasig.schedassist.model.IScheduleOwner;
 import org.jasig.schedassist.model.Preferences;
+
+import java.util.Map;
 
 /**
  * Interface that defines the mechanism for converting a {@link ICalendarAccount}
@@ -41,10 +41,10 @@ public interface OwnerDao {
 	 * Successful invocation results in a record of the user stored in the 
 	 * available data source.
 	 * 
-	 * Returns the completed {@link ScheduleOwner} that corresponds.
+	 * Returns the completed {@link IScheduleOwner} that corresponds.
 	 * 
 	 * @param calendarUser
-	 * @return a {@link ScheduleOwner} 
+	 * @return a {@link IScheduleOwner}
 	 * @throws IneligibleException if the {@link ICalendarAccount} is not eligible
 	 */
 	IScheduleOwner register(ICalendarAccount calendarUser) throws IneligibleException;
@@ -72,7 +72,7 @@ public interface OwnerDao {
 	 * Attempt to locate an existing {@link IScheduleOwner} by  
 	 * internal id, returning null if not found.
 	 * 
-	 * @see ScheduleOwner#getId()
+	 * @see IScheduleOwner#getId()
 	 * @param internalId
 	 * @return
 	 */
@@ -120,14 +120,14 @@ public interface OwnerDao {
 	
 	/**
 	 * 
-	 * @param id
+	 * @param internalId
 	 * @return
 	 */
 	String lookupUsername(long internalId);
 	
 	/**
 	 * 
-	 * @param id
+	 * @param internalId
 	 * @return
 	 */
 	String lookupUniqueId(long internalId);
