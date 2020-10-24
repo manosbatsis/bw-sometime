@@ -52,7 +52,6 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-jcl:5.2.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context-support:5.2.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:5.2.1.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.ldap:spring-ldap-core-tiger:2.3.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:1.4" level="project" />
     <orderEntry type="library" name="Maven: javax.mail:mail:1.4.1" level="project" />
     <orderEntry type="library" name="Maven: javax.activation:activation:1.1" level="project" />
@@ -79,10 +78,6 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-oxm:5.2.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.ws:spring-ws-core:3.0.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.ws:spring-xml:3.0.9.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.ws:spring-ws-core-tiger:1.5.10" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.ws:spring-oxm-tiger:1.5.10" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.ws:spring-oxm:1.5.10" level="project" />
-    <orderEntry type="library" name="Maven: javax.xml.stream:stax-api:1.0-2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.ws:spring-ws-security:3.0.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: net.sf.ehcache:ehcache:2.10.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.wss4j:wss4j-ws-security-dom:2.2.3" level="project" />

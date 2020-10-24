@@ -40,7 +40,9 @@
 		<spring-webflow.version>2.5.1.RELEASE</spring-webflow.version>
 		<spring-webmvc-portlet.version>4.3.28.RELEASE</spring-webmvc-portlet.version>
 		<spring-ws.version>3.0.9.RELEASE</spring-ws.version>
-		<spring-ws-tiger.version>1.5.10</spring-ws-tiger.version>
+		<spring-ws-soap.version>2.0.0.RELEASE</spring-ws-soap.version>
+		<!--<spring-ws-tiger.version>1.5.10</spring-ws-tiger.version>-->
+		<wsdl4j.version>1.6.3</wsdl4j.version>
 	</properties>
 
 	<scm>
@@ -119,6 +121,12 @@
 				<groupId>com.sun.activation</groupId>
 				<artifactId>jakarta.activation</artifactId>
 				<version>1.2.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sun.xml.messaging.saaj</groupId>
+				<artifactId>saaj-impl</artifactId>
+				<version>1.5.1</version>
 			</dependency>
 
 			<dependency>
@@ -342,13 +350,13 @@
 				<artifactId>spring-ldap-core</artifactId>
 				<version>${spring-ldap.version}</version>
 			</dependency>
-
+<!--
 			<dependency>
 				<groupId>org.springframework.ldap</groupId>
 				<artifactId>spring-ldap-core-tiger</artifactId>
 				<version>${spring-ldap.version}</version>
 			</dependency>
-
+-->
 			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-core</artifactId>
@@ -442,12 +450,12 @@
 				<artifactId>spring-ws-core</artifactId>
 				<version>${spring-ws.version}</version>
 			</dependency>
-
+<!--
 			<dependency>
 				<groupId>org.springframework.ws</groupId>
 				<artifactId>spring-ws-core-tiger</artifactId>
 				<version>${spring-ws-tiger.version}</version>
-			</dependency>
+			</dependency> -->
 
 			<dependency>
 				<groupId>org.springframework.ws</groupId>
@@ -459,6 +467,12 @@
 						<artifactId>xws-security</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+
+			<dependency>
+				<groupId>wsdl4j</groupId>
+				<artifactId>wsdl4j</artifactId>
+				<version>${wsdl4j.version}</version>
 			</dependency>
 
 			<dependency>

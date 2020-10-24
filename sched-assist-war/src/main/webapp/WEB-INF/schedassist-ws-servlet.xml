@@ -37,7 +37,7 @@
     <context:property-placeholder location="classpath:/scheduling-assistant-default.properties" />
 	<context:property-placeholder location="classpath:/scheduling-assistant.properties" ignore-resource-not-found="true"/>
     
-	<context:annotation-config base-package="org.jasig.schedassist.remoting"/>
+	<context:annotation-config />
 	<context:component-scan base-package="org.jasig.schedassist.remoting"/>
 	<!-- the value of the 'id' attribute is converted to the name of the wsdl, e.g. /context/<id>.wsdl -->
 	<bean id="sched-assist-remoting" class="org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition">
@@ -49,14 +49,14 @@
     	<property name="xsd" value="classpath:scheduling-assistant-messaging.xsd"/>
 	</bean>
 	
-	<bean id="passwordCallbackHandler" class="org.springframework.ws.soap.security.wss4j.callback.SimplePasswordValidationCallbackHandler">
+	<bean id="passwordCallbackHandler" class="org.springframework.ws.soap.security.wss4j2.callback.SimplePasswordValidationCallbackHandler">
    		<property name="users">
         	<props>
             	<prop key="${ws.username}">${ws.password}</prop>
         	</props>
     	</property>
 	</bean>
-	<bean id="securityInterceptor" class="org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor">
+	<bean id="securityInterceptor" class="org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor">
 		<property name="validationActions" value="UsernameToken"/>
    		<property name="validationCallbackHandler" ref="passwordCallbackHandler"/>
    	</bean>

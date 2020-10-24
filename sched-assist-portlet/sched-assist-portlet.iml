@@ -54,10 +54,6 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-oxm:5.2.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.ws:spring-ws-core:3.0.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.ws:spring-xml:3.0.9.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.ws:spring-ws-core-tiger:1.5.10" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.ws:spring-oxm-tiger:1.5.10" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.ws:spring-oxm:1.5.10" level="project" />
-    <orderEntry type="library" name="Maven: javax.xml.stream:stax-api:1.0-2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.ws:spring-ws-security:3.0.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:5.2.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-core:5.3.4.RELEASE" level="project" />

@@ -19,19 +19,21 @@
 
 package org.jasig.schedassist.impl.ldap;
 
-import javax.naming.Name;
-import javax.naming.NamingException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jasig.schedassist.model.ICalendarAccount;
 import org.springframework.ldap.core.DirContextOperations;
-import org.springframework.ldap.core.simple.AbstractParameterizedContextMapper;
+import org.springframework.ldap.core.support.AbstractContextMapper;
+
+import javax.naming.Name;
+import javax.naming.NamingException;
 
 /**
  * @author Nicholas Blair
  *
  */
-public class DefaultContextMapperImpl extends AbstractParameterizedContextMapper<LDAPPersonCalendarAccountImpl> {
+public class DefaultContextMapperImpl extends
+				AbstractContextMapper<ICalendarAccount> {
 
 	private final LDAPAttributesKey ldapAttributesKey;
 	protected final Log log = LogFactory.getLog(this.getClass());
@@ -44,13 +46,8 @@ public class DefaultContextMapperImpl extends AbstractParameterizedContextMapper
 		this.ldapAttributesKey = ldapAttributesKey;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.springframework.ldap.core.simple.AbstractParameterizedContextMapper#doMapFromContext(org.springframework.ldap.core.DirContextOperations)
-	 */
 	@Override
-	protected LDAPPersonCalendarAccountImpl doMapFromContext(
+	protected ICalendarAccount doMapFromContext(
 			DirContextOperations contextOperations) {
 		DefaultAttributesMapperImpl attributesMapper = new DefaultAttributesMapperImpl(ldapAttributesKey);
 		Name dn = contextOperations.getDn();

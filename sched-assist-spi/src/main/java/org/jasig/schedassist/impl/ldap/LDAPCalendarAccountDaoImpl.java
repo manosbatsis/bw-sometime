@@ -19,11 +19,8 @@
 
 package org.jasig.schedassist.impl.ldap;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.naming.directory.SearchControls;
-
+import com.googlecode.ehcache.annotations.Cacheable;
+import com.googlecode.ehcache.annotations.KeyGenerator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.schedassist.ICalendarAccountDao;
@@ -40,8 +37,10 @@ import org.springframework.ldap.filter.Filter;
 import org.springframework.ldap.filter.LikeFilter;
 import org.springframework.ldap.filter.OrFilter;
 
-import com.googlecode.ehcache.annotations.Cacheable;
-import com.googlecode.ehcache.annotations.KeyGenerator;
+import java.util.Collections;
+import java.util.List;
+
+import javax.naming.directory.SearchControls;
 
 
 /**
@@ -216,7 +215,7 @@ public class LDAPCalendarAccountDaoImpl implements ICalendarAccountDao {
 		
 		List<ICalendarAccount> results = Collections.emptyList();
 		try {
-			results = ldapTemplate.search(baseDn, searchFilter.toString(), sc, new DefaultContextMapperImpl(ldapAttributesKey));
+			return ldapTemplate.search(baseDn, searchFilter.toString(), sc, new DefaultContextMapperImpl(ldapAttributesKey));
 		} catch (SizeLimitExceededException e) {
 			log.debug("search filter exceeded results size limit(" + searchResultsLimit +"): " + searchFilter);
 		} catch (TimeLimitExceededException e) {
