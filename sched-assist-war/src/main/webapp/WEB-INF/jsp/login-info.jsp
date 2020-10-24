@@ -24,13 +24,13 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %> 
 <div id="logininfo">
 <p id="loginline"><spring:message code="you.are.logged.in.as"/>&nbsp;<span class="userid"><security:authentication property="principal.activeDisplayName"/></span>.&nbsp;&nbsp;&nbsp;
-<security:authorize ifAllGranted="ROLE_AVAILABLE_ADMINISTRATOR">
+<security:authorize access="hasRole('ROLE_AVAILABLE_ADMINISTRATOR')">
 <a href="<c:url value="/admin/index.html"/>"><spring:message code="scheduling.assistant.admin"/>&raquo;</a>&nbsp;
 </security:authorize>
-<security:authorize ifAnyGranted="ROLE_DELEGATE_OWNER,ROLE_DELEGATE_REGISTER">
+<security:authorize access="hasAnyRole('ROLE_DELEGATE_OWNER','ROLE_DELEGATE_REGISTER')">
 <a href="<c:url value="/delegate_switch_exit"/>"><spring:message code="log.out.delegate"/>&raquo;</a>
 </security:authorize>
-<security:authorize ifAnyGranted="ROLE_OWNER,ROLE_VISITOR">
+<security:authorize access="hasAnyRole('ROLE_OWNER','ROLE_VISITOR')">
 <a href="<c:url value="/logout.html"/>"><spring:message code="log.out"/>&raquo;</a>
 </security:authorize>
 </p>

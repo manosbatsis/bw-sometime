@@ -175,6 +175,13 @@
 		</taglib>
 
 		<taglib>
+			<taglib-uri>http://www.springframework.org/security/tags</taglib-uri>
+			<taglib-location>
+				/WEB-INF/tld/security.tld
+			</taglib-location>
+		</taglib>
+
+		<taglib>
 			<taglib-uri>http://java.sun.com/jsp/jstl/sql</taglib-uri>
 			<taglib-location>
 				/WEB-INF/tld/sql.tld
