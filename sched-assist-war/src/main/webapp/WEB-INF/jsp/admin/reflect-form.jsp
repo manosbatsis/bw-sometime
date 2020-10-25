@@ -52,7 +52,7 @@ margin-top: 2px;
 <c:url var="reflectFormUrl" value="reflection-service.html">
 <c:param name="action" value="reflect"></c:param>
 </c:url>
-<form:form action="${reflectFormUrl }" method="post" commandName="command"> 
+<form:form action="${reflectFormUrl }" method="post" modelAttribute="command">
 <fieldset>
 <legend><spring:message code="reflection.service.admin"/></legend>
 <label for="username"><spring:message code="schedule.owner"/>&nbsp;<spring:message code="username"/>:</label>&nbsp;<form:input path="username" />

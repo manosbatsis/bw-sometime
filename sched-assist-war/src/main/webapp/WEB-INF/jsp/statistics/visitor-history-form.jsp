@@ -129,7 +129,7 @@ $(document).ready(function() {
 </noscript>
 
 <div class="ownerform">
-<form:form commandName="command">
+<form:form modelAttribute="command">
 <fieldset>
 <legend><spring:message code="visitor.history"/></legend>
 <p class="info"><spring:message code="visitor.history.help"/></p>

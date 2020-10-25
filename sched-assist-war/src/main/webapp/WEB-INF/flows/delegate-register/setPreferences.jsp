@@ -116,7 +116,7 @@ $(document).ready(function(){
 <spring:message code="all.fields.required"/>
 </p>
 <div class="ownerform">
-<form:form commandName="registration">
+<form:form modelAttribute="registration">
 <fieldset>
 <legend><spring:message code="preferences"/></legend>
 <div class="formerror"><form:errors path="*"/></div>

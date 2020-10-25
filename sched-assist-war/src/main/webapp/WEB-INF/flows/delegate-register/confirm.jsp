@@ -92,7 +92,7 @@ $(document).ready(function(){
 </c:if>
 </ul>
 
-<form:form commandName="registration">
+<form:form modelAttribute="registration">
 <input type="hidden" name="execution" value=${flowExecutionKey }"/>
 <input type="submit" name="_eventId_confirm" value="Confirm and Create Account for this Resource" /> 
 &nbsp;or&nbsp;

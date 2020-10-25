@@ -97,7 +97,7 @@ $(document).ready(function(){
 <li><spring:message code="schedule.owner.registration.confirm.instructor" htmlEscape="false"/></li>
 </c:if>
 </ul>
-<form:form commandName="registration">
+<form:form modelAttribute="registration">
 <input type="hidden" name="execution" value=${flowExecutionKey }"/>
 <input type="submit" name="_eventId_confirm" value="<spring:message code="confirm.register"/>" /> 
 &nbsp;or&nbsp;

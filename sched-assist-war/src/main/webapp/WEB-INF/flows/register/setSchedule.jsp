@@ -50,7 +50,7 @@ $(document).ready(function(){
 </p>
 
 <div class="ownerform">
-<form:form commandName="registration">
+<form:form modelAttribute="registration">
 <fieldset>
 <legend><spring:message code="build.availability.schedule"/></legend>
 <div class="formerror"><form:errors path="*"/></div>
