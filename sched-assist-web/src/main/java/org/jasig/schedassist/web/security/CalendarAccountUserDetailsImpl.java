@@ -20,16 +20,16 @@
 
 package org.jasig.schedassist.web.security;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import org.jasig.schedassist.impl.owner.NotRegisteredException;
 import org.jasig.schedassist.model.ICalendarAccount;
 import org.jasig.schedassist.model.IScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.springframework.security.core.GrantedAuthority;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * {@link CalendarAccountUserDetails} implementation for standard people {@link ICalendarAccount}s.
@@ -97,19 +97,19 @@ public class CalendarAccountUserDetailsImpl implements CalendarAccountUserDetail
 	 * <li>if the {@link IScheduleOwner} field is set and is eligible, adds {@link SecurityConstants#OWNER}.</li>
 	 * </ol>
 	 * 
-	 * @see org.springframework.security.userdetails.UserDetails#getAuthorities()
+	 * @see org.springframework.security.core.userdetails.UserDetails#getAuthorities()
 	 */
 	public Collection<GrantedAuthority> getAuthorities() {
-		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		if(null != this.calendarAccount) {
-			if(this.calendarAccount.isEligible()) {
+		final List<GrantedAuthority> authorities = new ArrayList<>();
+		if (null != calendarAccount) {
+			if (calendarAccount.isEligible()) {
 				authorities.add(SecurityConstants.REGISTER);
 				authorities.add(SecurityConstants.DELEGATE_LOGIN);
 			}
 		}
 
-		if(null != this.scheduleVisitor) {
-			if(this.scheduleVisitor.getCalendarAccount().isEligible()) {
+		if (null != scheduleVisitor) {
+			if (scheduleVisitor.getCalendarAccount().isEligible()) {
 				authorities.add(SecurityConstants.VISITOR);
 			}
 		}
