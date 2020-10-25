@@ -54,7 +54,7 @@
 <li><c:out value="${delegate.displayName}"/>
 <form action="<c:url value="/delegate_switch_user"/>" method="post">
 <fieldset>
-<input type="hidden" name="j_username" value="${delegate.username }"/>
+<input type="hidden" name="username" value="${delegate.username }"/>
 <input type="submit" value="Login" />
 </fieldset>
 </form></li>

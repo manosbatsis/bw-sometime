@@ -63,7 +63,7 @@ $(document).ready(function(){
 <form action="<c:url value="/delegate_switch_user"/>" method="post">
 <fieldset>
 <label for="delegateName"><spring:message code="resource.name"/>:</label>&nbsp;
-<input type="text" id="delegateName" name="j_username"/>
+<input type="text" id="delegateName" name="username"/>
 <input type="submit" value="<spring:message code="log.in"/>" />
 </fieldset>
 </form>

@@ -90,6 +90,7 @@ $(function() {
 <input type="hidden" name="visitorUsername" value="${relationship.visitor.calendarAccount.username}"/>
 <input type="hidden" name="ownerId" value="${relationship.owner.id}"/>
 <input type="submit" class="removeButton" value="<spring:message code="revoke"/>"/>
+  <security:csrfInput/>
 </fieldset>
 </form>
 </td>

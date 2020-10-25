@@ -63,7 +63,7 @@
 <c:param name="action" value="clear"/>
 <c:param name="cacheName" value="${cacheName }"/>
 </c:url>
-<td><form action="${clearUrl }" method="post"><input type="submit" value="Clear"/></form></td>
+<td><form action="${clearUrl }" method="post"><input type="submit" value="Clear"/><security:csrfInput/></form></td>
 </tr>
 </c:forEach>
 </tbody>

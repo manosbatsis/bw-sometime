@@ -75,7 +75,7 @@
     <orderEntry type="library" name="Maven: org.springframework.ldap:spring-ldap-core:2.3.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-oxm:5.2.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.apache.ws.commons.schema:XmlSchema:1.4.5" level="project" />
-    <orderEntry type="library" name="Maven: javax.validation:validation-api:1.0.0.GA" level="project" />
+    <orderEntry type="library" name="Maven: javax.validation:validation-api:2.0.1.Final" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:jstl:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: taglibs:standard:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.jasig.resourceserver:resource-server-utils:1.0.24" level="project" />

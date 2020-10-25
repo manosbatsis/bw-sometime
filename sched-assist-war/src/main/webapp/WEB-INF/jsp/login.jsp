@@ -1,3 +1,5 @@
+<%@ taglib prefix="security"
+           uri="http://www.springframework.org/security/tags" %>
 <%--
 
     Licensed to Jasig under one or more contributor license
@@ -51,11 +53,12 @@
 <c:url value="/security_check" var="login"/>
 <div id="loginForm">
 <form action="${login}" method="post">
-<fieldset>
-<label for="j_username"><spring:message code="username"/>:&nbsp;</label><input name="j_username" type="text"/><br/>
-<label for="j_username"><spring:message code="password"/>:&nbsp;</label><input name="j_password" type="password"/><br/>
-<input type="submit" name="submit" value="Login"/>
-</fieldset>
+  <fieldset>
+    <label for="username"><spring:message code="username"/>:&nbsp;</label><input name="username" type="text"/><br/>
+    <label for="username"><spring:message code="password"/>:&nbsp;</label><input name="password" type="password"/><br/>
+    <input type="submit" name="submit" value="Login"/>
+    <security:csrfInput/>
+  </fieldset>
 </form>
 </div>
 
