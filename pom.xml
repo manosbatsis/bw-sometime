@@ -84,6 +84,7 @@
 		<module>sched-assist-spi-caldav-integrationtest</module>
 		<module>bw-sometime-database</module>
 		<module>bw-sched-assist-ear</module>
+		<module>bw-sometime-doc</module>
 	</modules>
 
 	<dependencyManagement>
