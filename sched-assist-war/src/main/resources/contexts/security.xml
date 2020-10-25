@@ -28,8 +28,8 @@
         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-5.3.xsd">
 	
 	<security:http use-expressions="true">
-		<security:form-login login-processing-url="/security_check" login-page="/login.html" authentication-failure-url="/login.html?login_error=1"/>
-		<security:logout invalidate-session="true" logout-url="/logout.html"/>
+		<security:form-login login-processing-url="/security_check" login-page="/login.html" authentication-failure-url="/login.html?login_error=1" />
+		<security:logout invalidate-session="true" logout-url="/logout.html" logout-success-url="/" />
 		
 		<security:intercept-url pattern="/register.html" access="hasRole('ROLE_REGISTER')" />
 		<security:intercept-url pattern="/owner/**" access="hasRole('ROLE_OWNER')" />
