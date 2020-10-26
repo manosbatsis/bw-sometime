@@ -1,10 +1,13 @@
 = Bedework Sometime
 :title: Bedework Enterprise Calendar System
 :doctype: standard
-:imagesdir: ./resources/
+:imagesdir: ./resources/images/
 :toc: left
 :toclevels: 3
 :sectnumlevels: 3
+
+:overview-dir: overview/
+:admin-dir: administrators/
 
 :sectnums!:
 
@@ -16,3 +19,6 @@ include::introduction.adoc[]
 [[overview]]
 == Overview
 
+include::{overview-dir}overview.adoc[]
+include::{overview-dir}homepage.adoc[]
+include::{overview-dir}postavailability.adoc[]

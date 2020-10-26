@@ -1,0 +1,3 @@
+=== Post Availability
+
+This option allows an advisor to define various preferences and to specify when they are available for appointments.

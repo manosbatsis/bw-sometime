@@ -11,4 +11,46 @@
 
   <artifactId>bw-sometime-doc</artifactId>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.asciidoctor</groupId>
+        <artifactId>asciidoctor-maven-plugin</artifactId>
+        <version>1.5.7.1</version>
+        <executions>
+          <execution>
+            <id>output-html</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <sourceHighlighter>coderay</sourceHighlighter>
+              <backend>html</backend>
+              <attributes>
+                <linkcss>true</linkcss>
+                <safe>true</safe>
+              </attributes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>output-docbook</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <backend>docbook</backend>
+              <doctype>book</doctype>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <sourceDirectory>src/main/asciidoc</sourceDirectory>
+          <headerFooter>true</headerFooter>
+          <preserveDirectories>true</preserveDirectories>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

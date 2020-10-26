@@ -1,0 +1,6 @@
+The sometime app is deployed in bedework at the /sometime context, for example, if you are running the quickstart on localhost it is found at
+
+http://localhost:8080/sometime
+
+
+

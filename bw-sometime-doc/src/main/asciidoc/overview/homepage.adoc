@@ -1,0 +1,15 @@
+=== The home page
+
+The home page, shown below, is where you start.
+
+.Home Page
+[#img-homepage]
+image::homepage.png[]
+
+The options offered are:
+
+* Schedule an appointment
+* Post your availability
+* Post the availability of a resource
+* Administrative fuctions
+
