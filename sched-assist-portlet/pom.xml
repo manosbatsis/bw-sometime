@@ -71,7 +71,7 @@
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
+			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -98,8 +98,12 @@
 			<artifactId>json-lib-ext-spring</artifactId>
 			<exclusions>
 				<exclusion>
-					<artifactId>servlet-api</artifactId>
 					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>javax.servlet-api</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
