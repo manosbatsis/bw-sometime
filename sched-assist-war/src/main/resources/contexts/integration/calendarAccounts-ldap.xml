@@ -56,7 +56,7 @@
 	</bean>
 	<bean id="ldapAttributesKey" class="org.jasig.schedassist.impl.ldap.LDAPAttributesKeyImpl">
 		<property name="usernameAttributeName" value="uid"/>
-		<property name="uniqueIdentifierAttributeName" value="mail"/>
+		<property name="uniqueIdentifierAttributeName" value="uid"/>
 		<property name="emailAddressAttributeName" value="mail"/>
 		<property name="displayNameAttributeName" value="cn"/>
 	</bean>
@@ -65,8 +65,8 @@
 		<property name="baseDn" ref="userAccountBaseDn"/>
 		<property name="ldapAttributesKey">
 			<bean class="org.jasig.schedassist.impl.ldap.LDAPAttributesKeyImpl">
-				<property name="usernameAttributeName" value="mail"/>
-				<property name="uniqueIdentifierAttributeName" value="mail"/>
+				<property name="usernameAttributeName" value="uid"/>
+				<property name="uniqueIdentifierAttributeName" value="uid"/>
 				<property name="emailAddressAttributeName" value="mail"/>
 				<property name="displayNameAttributeName" value="cn"/>
 			</bean>
