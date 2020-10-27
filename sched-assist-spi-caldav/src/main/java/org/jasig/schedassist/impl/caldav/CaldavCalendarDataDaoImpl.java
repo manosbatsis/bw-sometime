@@ -98,6 +98,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.String.format;
+
 /**
  * Implementation of {@link ICalendarDataDao} for CalDAV-capable calendar servers.
  * 
@@ -740,41 +742,52 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 
 	/**
 	 * 
-	 * @param calendarAccount
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 * @throws IOException 
+	 * @param calendarAccount to query
+	 * @param startDate of range
+	 * @param endDate of range
+	 * @return calendar with uri
 	 */
-	protected List<CalendarWithURI> getCalendarsInternal(ICalendarAccount calendarAccount,
-			Date startDate, Date endDate) {
-
-		String accountUri = this.caldavDialect.getCalendarAccountHome(calendarAccount);
-		HttpEntity requestEntity = caldavDialect.generateGetCalendarRequestEntity(startDate, endDate);
-		ReportMethod method = new ReportMethod(accountUri);
+	protected List<CalendarWithURI> getCalendarsInternal(
+					final ICalendarAccount calendarAccount,
+					final Date startDate,
+					final Date endDate) {
+		final String accountUri = this.caldavDialect.getCalendarAccountHome(calendarAccount);
+		final HttpEntity requestEntity =
+						caldavDialect.generateGetCalendarRequestEntity(startDate, endDate);
+		final ReportMethod method = new ReportMethod(accountUri);
 		method.setEntity(requestEntity);
 		//method.addHeader(CONTENT_LENGTH_HEADER, Long.toString(requestEntity.getContentLength()));
 		method.addHeader(DEPTH_HEADER);
-		if(log.isDebugEnabled()) {
-			log.debug("getCalendarsInternal executing " + methodToString(method) + " for " + calendarAccount + ", start " + startDate + ", end " + endDate);
+		if (log.isDebugEnabled()) {
+			log.debug(format("getCalendarsInternal executing " +
+															 "%s for %s, start %s, end %s",
+											 methodToString(method), calendarAccount,
+											 startDate,
+											 endDate));
 		}
-		HttpRequest toExecute = methodInterceptor.doWithMethod(method,calendarAccount);
+
+		final HttpRequest toExecute =
+						methodInterceptor.doWithMethod(method, calendarAccount);
 		final HttpContext context = constructHttpContext(calendarAccount);
 
 		HttpEntity entity = null;
 		try {
-			HttpResponse response = this.httpClient.execute(httpHost, toExecute, context);
+			final HttpResponse response =
+							httpClient.execute(httpHost, toExecute, context);
 			entity = response.getEntity();
-			int statusCode = response.getStatusLine().getStatusCode();
+			final int statusCode = response.getStatusLine().getStatusCode();
 			log.debug("getCalendarsInternal status code: " + statusCode);
-			if(statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_MULTI_STATUS) {
-				InputStream content = entity.getContent();
-				ReportResponseHandlerImpl reportResponseHandler = new ReportResponseHandlerImpl();
-				List<CalendarWithURI> calendars = reportResponseHandler.extractCalendars(content);
-				if(isGetCalendarPerformsPurgeDeclinedAttendees()) {
-					List<CalendarWithURI> results = new ArrayList<CalendarWithURI>();
-					for(CalendarWithURI c: calendars) {
-						if(purgeDeclinedAttendees(c, calendarAccount) != null) {
+			if (statusCode == HttpStatus.SC_OK ||
+							statusCode == HttpStatus.SC_MULTI_STATUS) {
+				final InputStream content = entity.getContent();
+				final ReportResponseHandlerImpl reportResponseHandler =
+								new ReportResponseHandlerImpl();
+				final List<CalendarWithURI> calendars =
+								reportResponseHandler.extractCalendars(content);
+				if (isGetCalendarPerformsPurgeDeclinedAttendees()) {
+					final List<CalendarWithURI> results = new ArrayList<>();
+					for (final CalendarWithURI c: calendars) {
+						if (purgeDeclinedAttendees(c, calendarAccount) != null) {
 							results.add(c);
 						}
 					}
