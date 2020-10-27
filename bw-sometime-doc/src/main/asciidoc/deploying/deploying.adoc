@@ -1,0 +1,31 @@
+=== Deploying
+
+Initially this will be a set of notes that may eventually develop into a coherent whole.
+
+==== Ldap Information
+Look in contexts/integration/calendarAccounts-ldap.xml
+
+The following attributes are extracted from ldap:
+
+* CalendarUniqueId: attribute "uid". In the quickstart this looks like e.g. douglm
+* DisplayName: attribute "cn".
+* Username: attribute "uid". In the quickstart this looks like e.g. douglm
+* EmailAddress: attribute "mail". In the quickstart this looks like e.g. douglm@mysite.edu
+
+In scheduling-assistant-default-properties there is:
+
+users.visibleIdentifierAttributeName
+
+The comment suggests this can be set to "mail" or maybe "uid".
+
+It appears it can conflict with the other ldap settings.
+
+Also - the csv imported relationships use these properties for searches. If CalendarUniqueId or users.visibleIdentifierAttributeName is set to "mail" then the quickstart values aren't found.
+
+This is because the values are simple account names - e.g. "douglm".
+
+It is not possible to change the csv imported values to be email addresses - the schema only allows16 characters for the ids - "douglm@mysite.edu" is 17. This suggests that the Wisconsin system used the account id ("uid" attribute) for the values.
+
+Setting all those values to "uid" and rebuilding the data means that the advisor schedules start to show up.
+
+
