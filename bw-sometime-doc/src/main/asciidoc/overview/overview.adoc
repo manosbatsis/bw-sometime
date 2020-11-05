@@ -2,5 +2,8 @@ The sometime app is deployed in bedework at the /sometime context, for example, 
 
 http://localhost:8080/sometime
 
+=== Terminology
 
-
+* Delegate
++
+A delegate seems to be what is also referred to as a resource.

@@ -1,0 +1,27 @@
+=== Data Sources
+
+==== Advisor List
+Currently this still has some Wisconsin flavor to it. See org.jasig.schedassist.impl.relationship.advising.AdvisorListRelationshipDataSourceImpl for the source.
+
+This is run periodically to load data from a csv file with the following fields:
+
+* Student ISIS Emplid (field 3)
+* Term ID number (field 9)
+* Term description (field 10)
+* Academic Program description (field 16)
+* Advisor ISIS Emplid (field 22)
+* Advisor type (field 25)
+* Committee Role (field 26)
+
+The field numbers refer to the fields in the Wisconsin file. It's not clear yet if this datasource has any use in general.
+
+==== CSV Owner/visitor relationships
+
+This is a simple CSV file with 3 fields:
+
+* ownerIdentifier
+* visitorIdentifier
+* relationshipDescription
+
+The owner and visitor MUST at the moment be an account name - e.g. "douglm". While it appears from some config they could be the calendar address - e.g. "douglm@mysite.edu" this does not work because the schema limits the length of the fields to 16.
+
