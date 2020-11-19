@@ -19,27 +19,10 @@
 
 package org.jasig.schedassist.model;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TimeZone;
-import java.util.UUID;
-
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Period;
@@ -70,7 +53,6 @@ import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.time.DateUtils;
@@ -79,6 +61,23 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.schedassist.IAffiliationSource;
 import org.jasig.schedassist.NullAffiliationSourceImpl;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.temporal.TemporalAmount;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TimeZone;
+import java.util.UUID;
 
 /**
  * Default {@link IEventUtils} implementation.
@@ -676,10 +675,12 @@ public class DefaultEventUtilsImpl implements IEventUtils {
 		}
 		return results;
 	}
-	protected boolean isAllDayPeriod(Period period) {
-		Dur duration = period.getDuration();
-		return duration.getDays() == 1 && duration.getHours() == 0 && duration.getMinutes() == 0;
+
+	protected boolean isAllDayPeriod(final Period period) {
+		final TemporalAmount dur = period.getDuration();
+		return dur instanceof java.time.Period;
 	}
+
 	/**
 	 * 
 	 * @param event
