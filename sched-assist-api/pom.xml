@@ -34,6 +34,12 @@
 		<dependency>
 			<groupId>${ical4j.groupId}</groupId>
 			<artifactId>${ical4j.artifactId}</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.cache</groupId>
+					<artifactId>cache-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
