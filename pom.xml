@@ -147,16 +147,8 @@
 				<version>${ical4j.version}</version>
 				<exclusions>
 					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-					<exclusion>
-						<artifactId>commons-codec</artifactId>
-						<groupId>commons-codec</groupId>
-					</exclusion>
-					<exclusion>
-						<groupId>javax.cache</groupId>
-						<artifactId>cache-api</artifactId>
+						<artifactId>*</artifactId>
+						<groupId>*</groupId>
 					</exclusion>
 				</exclusions>
 			</dependency>
