@@ -33,6 +33,7 @@
 <rs:resourceURL var="jqueryUiPath" value="/rs/jqueryui/1.7.2/jquery-ui-1.7.2.min.js"/>
 <script type="text/javascript" src="${jqueryUiPath}"></script>
 <script type="text/javascript" src="<c:url value="/js/owner-schedule-utils.js"/>"></script>
+<security:csrfMetaTags />
 <script type="text/javascript">
 jQuery(document).ready(function(){
 	$('#loginline').append('<a class="noscriptlink" href="schedule-noscript.html"><spring:message code="trouble.viewing.this.page"/></a>');
@@ -69,14 +70,21 @@ jQuery(document).ready(function(){
 	});
 
 	$.ajaxSetup({
-		"error": function(XMLHttpRequest,textStatus, errorThrown) {   
+		beforeSend:function (xhr)
+		{
+			var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+			var csrfToken  = $("meta[name='_csrf']").attr("content");
+
+			xhr.setRequestHeader(csrfHeader, csrfToken);
+		},
+		"error": function(XMLHttpRequest,textStatus, errorThrown) {
 			if(null != XMLHttpRequest) {
 				if(XMLHttpRequest.status == 403) {
 					showChangeError("#schedulechangestatus", '<spring:message code="session.timed.out"/>');
 				} else if (XMLHttpRequest.status == 503) {
 					showChangeError("#schedulechangestatus", '<spring:message code="service.temporarily.unavailable"/>');
 				} else if (textStatus == 'parsererror' && XMLHttpRequest.status == 200) {
-					showChangeError("#schedulechangestatus", '<spring:message code="session.timed.out"/>'); 
+					showChangeError("#schedulechangestatus", '<spring:message code="parser.error"/>');
 				} else {
 					showChangeError("#schedulechangestatus", '<spring:message code="unexpected.error"/>');
 				}
@@ -213,7 +221,7 @@ function postAddForm(startTime, endTime) {
 	showChangeInProgress("#schedulechangestatus", '<spring:message code="updating.availability.schedule"/>');
 	start = formatDateForBlockForm(startTime);
 	end = formatDateForBlockForm(endTime);
-	jQuery.post('<c:url value="add-block.html"/>',
+jQuery.post('<c:url value="add-block.html"/>',
 			{
 		startTimePhrase: start,
 		endTimePhrase: end
