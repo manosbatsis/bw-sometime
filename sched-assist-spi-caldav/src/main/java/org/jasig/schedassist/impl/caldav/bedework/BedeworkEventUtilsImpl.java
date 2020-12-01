@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -42,7 +42,7 @@ public class BedeworkEventUtilsImpl extends CaldavEventUtilsImpl {
 	 * 
 	 * @param affiliationSource
 	 */
-	public BedeworkEventUtilsImpl(IAffiliationSource affiliationSource) {
+	public BedeworkEventUtilsImpl(final IAffiliationSource affiliationSource) {
 		super(affiliationSource);
 	}
 
@@ -54,14 +54,21 @@ public class BedeworkEventUtilsImpl extends CaldavEventUtilsImpl {
 	 * @see org.jasig.schedassist.impl.caldav.CaldavEventUtilsImpl#constructAvailableAppointment(org.jasig.schedassist.model.AvailableBlock, org.jasig.schedassist.model.IScheduleOwner, org.jasig.schedassist.model.IScheduleVisitor, java.lang.String)
 	 */
 	@Override
-	public VEvent constructAvailableAppointment(AvailableBlock block,
-			IScheduleOwner owner, IScheduleVisitor visitor,
-			String eventDescription) {
-		VEvent event = super.constructAvailableAppointment(block, owner, visitor,
-				eventDescription);
-		event.getProperties().add(new XProperty(BEDEWORK_SUBMITTEDBY, owner.getCalendarAccount().getUsername()));
+	public VEvent constructAvailableAppointment(
+					final AvailableBlock block,
+					final IScheduleOwner owner,
+					final IScheduleVisitor visitor,
+					final String eventDescription) {
+		final VEvent event = super.constructAvailableAppointment(
+						block, owner, visitor, eventDescription);
+
+		event.getProperties().add(
+						new XProperty(BEDEWORK_SUBMITTEDBY,
+													owner.getCalendarAccount().getUsername()));
 		// don't need an attendee for the owner!
-		Property ownerAttendee = getAttendeeForUserFromEvent(event, owner.getCalendarAccount());
+		final Property ownerAttendee =
+						getAttendeeForUserFromEvent(event,
+																				owner.getCalendarAccount());
 		event.getProperties().remove(ownerAttendee);
 		return event;
 	}

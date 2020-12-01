@@ -19,12 +19,8 @@
 
 package org.jasig.schedassist.impl;
 
-import java.util.Date;
-import java.util.List;
-
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.VEvent;
-
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
@@ -51,6 +47,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Default implementation of {@link SchedulingAssistantService}.
@@ -275,62 +274,80 @@ public final class SchedulingAssistantServiceImpl implements SchedulingAssistant
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.SchedulingAssistantService#scheduleAppointment(org.jasig.schedassist.model.IScheduleVisitor, org.jasig.schedassist.model.IScheduleOwner, org.jasig.schedassist.model.AvailableBlock, java.lang.String)
-	 */
 	@Override
-	public VEvent scheduleAppointment(IScheduleVisitor visitor, IScheduleOwner owner, 
-			AvailableBlock block, String eventDescription) throws SchedulingException {
+	public VEvent scheduleAppointment(
+					final IScheduleVisitor visitor,
+					final IScheduleOwner owner,
+					final AvailableBlock block,
+					final String eventDescription) throws SchedulingException {
 		if(owner.isSamePerson(visitor)) {
 			LOG.warn("ignoring request to scheduleAppointment for owner/visitor same person: " + owner);
 			return null;
 		}
 		
 		// assert the requested block is within the owner's current schedule
-		AvailableBlock ownerPersistedBlock = availableScheduleDao.retrieveTargetBlock(owner, block.getStartTime());
-		if(null == ownerPersistedBlock) {
-			throw new SchedulingException("requested time is not available in schedule: " + block);
+		final AvailableBlock ownerPersistedBlock =
+						availableScheduleDao.retrieveTargetBlock(
+										owner, block.getStartTime());
+
+		if (null == ownerPersistedBlock) {
+			throw new SchedulingException(
+							"requested time is not available in schedule: " + block);
 		}
 
-		if(ownerPersistedBlock.getVisitorLimit() == 1) {
+		if (ownerPersistedBlock.getVisitorLimit() == 1) {
 			// check to see if there is a conflict
 			calendarDao.checkForConflicts(owner, block);
 			// no conflicts, create the appointment
-			VEvent event = calendarDao.createAppointment(visitor, owner, block, eventDescription);
-			if(null !=  applicationEventPublisher) {
-				applicationEventPublisher.publishEvent(new AppointmentCreatedEvent(event, owner, visitor, block, eventDescription));
+			final VEvent event = calendarDao.createAppointment(
+							visitor, owner, block, eventDescription);
+
+			if (null !=  applicationEventPublisher) {
+				applicationEventPublisher.publishEvent(
+								new AppointmentCreatedEvent(
+												event, owner, visitor, block, eventDescription));
 			}
 			return event;
-		} else {
-			// owner supports multiple visitors
-			// look for an existing appointment
-			VEvent existingAppointment = calendarDao.getExistingAppointment(owner, block);
-			if(null == existingAppointment) {
-				// check to see if there is a conflict
-				calendarDao.checkForConflicts(owner, block);
-				// lets create it
-				VEvent event = calendarDao.createAppointment(visitor, owner, block, eventDescription);
-				if(null !=  applicationEventPublisher) {
-					applicationEventPublisher.publishEvent(new AppointmentJoinedEvent(event, owner, visitor, block));
-				}
-				return event;
-			} else {
-				// try to join if attendee count hasn't been exceeded
-				int visitorCount = this.eventUtils.getScheduleVisitorCount(existingAppointment);
-				if(visitorCount < ownerPersistedBlock.getVisitorLimit()) {
-					// join!
-					VEvent event = calendarDao.joinAppointment(visitor, owner, existingAppointment);
-					if(null !=  applicationEventPublisher) {
-						applicationEventPublisher.publishEvent(new AppointmentJoinedEvent(event, owner, visitor, block));
-					}
-					return event;
-				} else {
-					// visitor limit exceeded
-					throw new SchedulingException("visitor limit for this appointment has been met");
-				}
-			}
 		}
+
+		// owner supports multiple visitors
+		// look for an existing appointment
+		final VEvent existingAppointment =
+						calendarDao.getExistingAppointment(owner, block);
+
+		if (null == existingAppointment) {
+			// check to see if there is a conflict
+			calendarDao.checkForConflicts(owner, block);
+			// lets create it
+			final VEvent event = calendarDao.createAppointment(
+							visitor, owner, block, eventDescription);
+
+			if (null !=  applicationEventPublisher) {
+				applicationEventPublisher.publishEvent(
+								new AppointmentJoinedEvent(event, owner, visitor, block));
+			}
+			return event;
+		}
+
+		// try to join if attendee count hasn't been exceeded
+		final int visitorCount =
+						eventUtils.getScheduleVisitorCount(existingAppointment);
+
+		if (visitorCount >= ownerPersistedBlock.getVisitorLimit()) {
+			// visitor limit exceeded
+			throw new SchedulingException(
+							"visitor limit for this appointment has been met");
+		}
+
+		// join!
+		final VEvent event = calendarDao.joinAppointment(
+						visitor, owner, existingAppointment);
+
+		if (null !=  applicationEventPublisher) {
+			applicationEventPublisher.publishEvent(
+							new AppointmentJoinedEvent(event, owner, visitor, block));
+		}
+		return event;
 	}
 	
 	

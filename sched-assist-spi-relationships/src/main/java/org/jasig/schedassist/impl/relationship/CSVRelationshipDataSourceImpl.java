@@ -153,10 +153,10 @@ public class CSVRelationshipDataSourceImpl implements RelationshipDataSource, In
 			if(isResourceUpdated(csvResource)) {
 				LOG.info("resource updated, reloading advisorList data");
 				//List<StudentAdvisorAssignment> records = readResource(advisorListResource, currentTerm);
-				List<CSVRelationship> records = new ArrayList<CSVRelationship>();
+				List<CSVRelationship> records = new ArrayList<>();
 				try {
 					records = readCSVResource(csvResource);
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					LOG.error("caught IOException reading csv data source", e);
 					return;
 				}
@@ -167,25 +167,26 @@ public class CSVRelationshipDataSourceImpl implements RelationshipDataSource, In
 				}
 
 				LOG.info("deleting all existing records from csv_relationships table");
-				StopWatch stopWatch = new StopWatch();
+				final StopWatch stopWatch = new StopWatch();
 				stopWatch.start();
 				this.getJdbcTemplate().execute("delete from csv_relationships");
-				long deleteTime = stopWatch.getTime();
+				final long deleteTime = stopWatch.getTime();
 				LOG.info("finished deleting existing (" + deleteTime + " msec), starting batch insert");
 				stopWatch.reset();
 				stopWatch.start();
-				SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(records.toArray());
+				final SqlParameterSource[] batch =
+								SqlParameterSourceUtils.createBatch(records.toArray());
 				this.getNpJdbcTemplate().batchUpdate(
 						"insert into csv_relationships (owner_id, visitor_id, rel_description) values (:ownerIdentifier, :visitorIdentifier, :relationshipDescription)",
 						batch);
-				long insertTime = stopWatch.getTime();
+				final long insertTime = stopWatch.getTime();
 				stopWatch.stop();
 				LOG.info("batch insert complete (" + insertTime + " msec)");
 				LOG.info("reloadData complete (total time: " + (insertTime + deleteTime) + " msec)");
 				this.lastReloadTimestamp = new Date();
 				try {
 					this.resourceLastModified = csvResource.lastModified();
-				} catch (IOException e) {
+				} catch (final IOException ignored) {
 					LOG.debug("ignoring IOException from accessing Resource.lastModified()");
 				}
 			} else {
@@ -202,14 +203,13 @@ public class CSVRelationshipDataSourceImpl implements RelationshipDataSource, In
 	 * @return
 	 */
 	protected boolean isResourceUpdated(final Resource resource) {
-		boolean result = true;
 		try {
-			result = (this.resourceLastModified == -1L) || (resource.lastModified() > this.resourceLastModified);
-		} catch (IOException e) {
+			return (this.resourceLastModified == -1L) || (resource.lastModified() > this.resourceLastModified);
+		} catch (final IOException ignored) {
 			// this exception will occur if the Resource is not representable as a File
 			// in this case - always return true?
 		}
-		return result;
+		return true;
 	}
 	
 	/**
@@ -220,30 +220,30 @@ public class CSVRelationshipDataSourceImpl implements RelationshipDataSource, In
 	 * @param resource
 	 * @return a never null, but potentially empty list of {@link CSVRelationship}s.
 	 */
-	protected List<CSVRelationship> readCSVResource(final Resource resource) throws IOException {
-		Set<CSVRelationship> results = new HashSet<CSVRelationship>();
-		CSVReader lineReader = new CSVReader(new InputStreamReader(resource.getInputStream()));
+	protected List<CSVRelationship> readCSVResource(
+					final Resource resource) throws IOException {
+		final Set<CSVRelationship> results = new HashSet<>();
+		final CSVReader lineReader = new CSVReader(
+						new InputStreamReader(resource.getInputStream()));
 		String [] tokens = lineReader.readNext();
 		while(null != tokens) {
 			if(tokens.length == 3) {
-				CSVRelationship relationship = new CSVRelationship();
+				final CSVRelationship relationship = new CSVRelationship();
 				relationship.setOwnerIdentifier(tokens[0]);
 				relationship.setVisitorIdentifier(tokens[1]);
 				relationship.setRelationshipDescription(tokens[2]);
 				results.add(relationship);
 			} else {
-				LOG.debug("skipping CSV line with tokens.length != 3, " + Arrays.toString(tokens));
+				LOG.debug("skipping CSV line with tokens.length != 3, " +
+													Arrays.toString(tokens));
 			}
 			
 			tokens = lineReader.readNext();
 		}
 		
-		return new ArrayList<CSVRelationship>(results);
+		return new ArrayList<>(results);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.impl.relationship.RelationshipDataSource#getLastReloadTimestamp()
-	 */
 	@Override
 	public Date getLastReloadTimestamp() {
 		return null == this.lastReloadTimestamp ? null : new Date(this.lastReloadTimestamp.getTime());

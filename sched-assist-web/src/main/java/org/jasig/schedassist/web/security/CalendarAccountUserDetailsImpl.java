@@ -48,7 +48,7 @@ public class CalendarAccountUserDetailsImpl implements CalendarAccountUserDetail
 	private IScheduleVisitor scheduleVisitor;
 	private IScheduleOwner scheduleOwner;
 	private boolean administrator = false;
-	private String activeDisplayNameAttribute = "mail";
+	private String activeDisplayNameAttribute = "uid";
 	private static final String EMPTY = "";
 
 	/**

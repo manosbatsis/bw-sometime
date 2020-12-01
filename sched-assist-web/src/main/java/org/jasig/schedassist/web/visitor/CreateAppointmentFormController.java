@@ -20,14 +20,7 @@
 
 package org.jasig.schedassist.web.visitor;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
-import javax.validation.Valid;
-
 import net.fortuna.ical4j.model.component.VEvent;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -63,6 +56,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import javax.validation.Valid;
 
 /**
  * {@link Controller} for {@link IScheduleVisitor}s to create appointments 
@@ -258,8 +257,12 @@ public class CreateAppointmentFormController {
 	 * @throws SchedulingException
 	 */
 	@RequestMapping(method=RequestMethod.POST)
-	protected String createAppointment(final ModelMap model, @PathVariable("ownerIdentifier") final String ownerIdentifier,
-			@Valid @ModelAttribute(COMMAND_ATTR_NAME) final CreateAppointmentFormBackingObject fbo, BindingResult bindingResult) throws NotAVisitorException, OwnerNotFoundException, SchedulingException {
+	protected String createAppointment(
+					final ModelMap model,
+					@PathVariable("ownerIdentifier") final String ownerIdentifier,
+					@Valid @ModelAttribute(COMMAND_ATTR_NAME) final CreateAppointmentFormBackingObject fbo,
+					final BindingResult bindingResult)
+					throws NotAVisitorException, OwnerNotFoundException, SchedulingException {
 		CalendarAccountUserDetailsImpl currentUser = (CalendarAccountUserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		IScheduleVisitor visitor = currentUser.getScheduleVisitor();
 		

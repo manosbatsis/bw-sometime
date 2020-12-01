@@ -19,12 +19,7 @@
 
 package org.jasig.schedassist.impl;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import net.fortuna.ical4j.model.component.VEvent;
-
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.time.DateUtils;
 import org.jasig.schedassist.CalendarAccountNotFoundException;
@@ -41,6 +36,10 @@ import org.jasig.schedassist.model.IScheduleOwner;
 import org.jasig.schedassist.model.IScheduleVisitor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Helper class to provide a means to create an Available
@@ -105,16 +104,15 @@ public final class AppointmentTool {
 		
 		IScheduleVisitor visitor = visitorDao.toVisitor(visitorUser);
 		IScheduleOwner owner = ownerDao.locateOwner(ownerUser);
-		if(null == owner) {
+		if (null == owner) {
 			throw new SchedulingException("owner not registered with Available");
 		}
 		
 		AvailableBlock block = availableScheduleDao.retrieveTargetBlock(owner, startDate);
-		if(null == block) {
+		if (null == block) {
 			throw new SchedulingException("owner does not have availability at " + startDate);
 		}
-		VEvent result = this.schedulingAssistantService.scheduleAppointment(visitor, owner, block, "test appointment created by WiscCal administrator");
-		return result;
+		return this.schedulingAssistantService.scheduleAppointment(visitor, owner, block, "test appointment created by WiscCal administrator");
 	}
 	
 	

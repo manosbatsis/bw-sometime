@@ -363,31 +363,34 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.ICalendarDataDao#createAppointment(org.jasig.schedassist.model.IScheduleVisitor, org.jasig.schedassist.model.IScheduleOwner, org.jasig.schedassist.model.AvailableBlock, java.lang.String)
-	 */
 	@Override
-	public VEvent createAppointment(IScheduleVisitor visitor,
-			IScheduleOwner owner, AvailableBlock block, String eventDescription) {
-		VEvent event = this.eventUtils.constructAvailableAppointment(
-				block, 
-				owner,
-				visitor, 
-				eventDescription);
+	public VEvent createAppointment(
+					final IScheduleVisitor visitor,
+					final IScheduleOwner owner,
+					final AvailableBlock block,
+					final String eventDescription) {
+		final VEvent event = this.eventUtils.constructAvailableAppointment(
+						block,
+						owner,
+						visitor,
+						eventDescription);
+
 		try {
-			int statusCode = putNewEvent(owner.getCalendarAccount(), event);
-			if(log.isDebugEnabled()) {
+			final int statusCode = putNewEvent(owner.getCalendarAccount(), event);
+			if (log.isDebugEnabled()) {
 				log.debug("createAppointment status code: " + statusCode);
 			}
-			if(statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
+			if (statusCode == HttpStatus.SC_OK ||
+							statusCode == HttpStatus.SC_CREATED) {
 				return event;
-			} else {
-				throw new CaldavDataAccessException("createAppointment for " + visitor + ", " + owner + ", " + block + " failed with unexpected status code: " + statusCode);
 			}
-		} catch (HttpException e) {
-			log.error("an HttpException occurred in createAppointment for " + owner + ", " + visitor + ", " + block);
-			throw new CaldavDataAccessException(e);
-		} catch (IOException e) {
+
+			throw new CaldavDataAccessException(
+							String.format(
+											"createAppointment for %s, %s, %s" +
+															" failed with unexpected status code: %d",
+											visitor, owner, block, statusCode));
+		} catch (final IOException e) {
 			log.error("an IOException occurred in createAppointment for " + owner + ", " + visitor + ", " + block);
 			throw new CaldavDataAccessException(e);
 		} 
@@ -1028,22 +1031,23 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 		}
 
 	}
+
 	/**
 	 * Store a new event using CalDAV PUT.
 	 * 
 	 * @param eventOwner
 	 * @param event
 	 * @return
-	 * @throws HttpException
 	 * @throws IOException
 	 */
-	protected int putNewEvent(ICalendarAccount eventOwner, VEvent event) throws HttpException, IOException {
-		String uri = generateEventUri(eventOwner, event);
+	protected int putNewEvent(final ICalendarAccount eventOwner,
+														final VEvent event) throws IOException {
+		final String uri = generateEventUri(eventOwner, event);
 
-		HttpPut method = constructPutMethod(uri, event);
+		final HttpPut method = constructPutMethod(uri, event);
 		method.addHeader(IF_NONE_MATCH_HEADER);
 
-		HttpRequest toExecute = this.methodInterceptor.doWithMethod(method, eventOwner);
+		final HttpRequest toExecute = this.methodInterceptor.doWithMethod(method, eventOwner);
 		if(log.isDebugEnabled()) {
 			log.debug("putNewEvent executing " + methodToString(method) + " for " + eventOwner);
 		}
@@ -1051,18 +1055,18 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 
 		HttpEntity entity = null;
 		try {
-			HttpResponse response = this.httpClient.execute(httpHost, toExecute, context);
+			final HttpResponse response = this.httpClient.execute(httpHost, toExecute, context);
 			entity = response.getEntity();
-			if(log.isDebugEnabled()) {
-				if(entity == null) {
+			if (log.isDebugEnabled()) {
+				if (entity == null) {
 					log.debug("putNewEvent response entity was null, statusline: " + response.getStatusLine());
 				} else {
-					InputStream content = entity.getContent();
+					final InputStream content = entity.getContent();
 					log.debug("putNewEvent response body: " + IOUtils.toString(content));
 				}
 			}
-			int statusCode = response.getStatusLine().getStatusCode();
-			return statusCode;
+
+			return response.getStatusLine().getStatusCode();
 		} finally {
 			EntityUtils.consume(entity);
 		}
@@ -1205,10 +1209,10 @@ public class CaldavCalendarDataDaoImpl implements ICalendarDataDao, Initializing
 	 * @param event
 	 * @return
 	 */
-	HttpPut constructPutMethod(String uri, VEvent event) {
-		HttpPut method = new HttpPut(uri);
+	HttpPut constructPutMethod(final String uri, final VEvent event) {
+		final HttpPut method = new HttpPut(uri);
 		method.addHeader(ICALENDAR_CONTENT_TYPE_HEADER);
-		HttpEntity requestEntity = caldavDialect.generatePutAppointmentRequestEntity(event);
+		final HttpEntity requestEntity = caldavDialect.generatePutAppointmentRequestEntity(event);
 		method.setEntity(requestEntity);
 		return method;
 	}

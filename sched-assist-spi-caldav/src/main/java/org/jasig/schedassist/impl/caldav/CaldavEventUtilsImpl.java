@@ -198,9 +198,9 @@ public class CaldavEventUtilsImpl extends DefaultEventUtilsImpl implements Initi
 	 * @see org.jasig.schedassist.model.DefaultEventUtilsImpl#wrapEventInCalendar(net.fortuna.ical4j.model.component.VEvent)
 	 */
 	@Override
-	public Calendar wrapEventInCalendar(VEvent event) {
-		Calendar calendar = super.wrapEventInCalendar(event);
-		if(isExplicitSetTimeZone() && this._timeZone != null) {
+	public Calendar wrapEventInCalendar(final VEvent event) {
+		final Calendar calendar = super.wrapEventInCalendar(event);
+		if (isExplicitSetTimeZone() && this._timeZone != null) {
 			calendar.getComponents().add(this._timeZone.getVTimeZone());
 		}
 		
