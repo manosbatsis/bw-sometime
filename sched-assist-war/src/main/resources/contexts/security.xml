@@ -92,7 +92,7 @@
 		class="org.jasig.schedassist.web.security.CalendarAccountUserDetailsServiceImpl">
 		<property name="administratorListProperty" value="${administrators.list}"/>
 		<property name="identifyingAttributeName" value="uid"/>
-		<property name="activeDisplayNameAttribute" value="mail"/>
+		<property name="activeDisplayNameAttribute" value="uid"/>
 		<!-- use a separate calendarAccountDao that allows for lookup by uid -->
 		<property name="calendarAccountDao">
 			<bean id="calendarAccountDao" class="org.jasig.schedassist.impl.ldap.LDAPCalendarAccountDaoImpl">
