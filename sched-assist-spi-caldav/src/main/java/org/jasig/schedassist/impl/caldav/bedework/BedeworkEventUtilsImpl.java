@@ -19,10 +19,8 @@
 
 package org.jasig.schedassist.impl.caldav.bedework;
 
-import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.XProperty;
-
 import org.jasig.schedassist.IAffiliationSource;
 import org.jasig.schedassist.impl.caldav.CaldavEventUtilsImpl;
 import org.jasig.schedassist.model.AvailableBlock;
@@ -66,10 +64,10 @@ public class BedeworkEventUtilsImpl extends CaldavEventUtilsImpl {
 						new XProperty(BEDEWORK_SUBMITTEDBY,
 													owner.getCalendarAccount().getUsername()));
 		// don't need an attendee for the owner!
-		final Property ownerAttendee =
-						getAttendeeForUserFromEvent(event,
-																				owner.getCalendarAccount());
-		event.getProperties().remove(ownerAttendee);
+		//final Property ownerAttendee =
+		//				getAttendeeForUserFromEvent(event,
+		//																		owner.getCalendarAccount());
+		//event.getProperties().remove(ownerAttendee);
 		return event;
 	}
 
