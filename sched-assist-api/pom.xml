@@ -32,6 +32,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.bedework</groupId>
+			<artifactId>bw-util-misc</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>${ical4j.groupId}</groupId>
 			<artifactId>${ical4j.artifactId}</artifactId>
 			<exclusions>

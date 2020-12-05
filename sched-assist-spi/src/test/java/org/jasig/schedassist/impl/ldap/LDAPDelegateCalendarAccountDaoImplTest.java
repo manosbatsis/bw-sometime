@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -46,14 +46,17 @@ public class LDAPDelegateCalendarAccountDaoImplTest {
 		final HasDistinguishedName owner = Mockito.mock(HasDistinguishedName.class);
 		Mockito.when(owner.getDistinguishedName()).thenReturn(name);
 		
-		MockCalendarAccountWithDistinguishedName accountOwner = new MockCalendarAccountWithDistinguishedName();
+		final MockCalendarAccountWithDistinguishedName accountOwner =
+						new MockCalendarAccountWithDistinguishedName();
 		accountOwner.setDistinguishedName(name);
 		
-		LDAPDelegateCalendarAccountDaoImpl accountDao = new LDAPDelegateCalendarAccountDaoImpl();
+		final LDAPDelegateCalendarAccountDaoImpl accountDao =
+						new LDAPDelegateCalendarAccountDaoImpl();
 		accountDao.setTreatOwnerAttributeAsDistinguishedName(true);
 		
-		List<IDelegateCalendarAccount> delegates = new ArrayList<IDelegateCalendarAccount>();
-		MockDelegateCalendarAccount mockDelegate = new MockDelegateCalendarAccount();
+		final List<IDelegateCalendarAccount> delegates = new ArrayList<>();
+		final MockDelegateCalendarAccount mockDelegate =
+						new MockDelegateCalendarAccount();
 		mockDelegate.setAccountOwnerAttribute(name.toString());
 		delegates.add(mockDelegate);
 		accountDao.enforceDistinguishedNameMatch(delegates, owner);
@@ -68,14 +71,17 @@ public class LDAPDelegateCalendarAccountDaoImplTest {
 						Mockito.mock(HasDistinguishedName.class);
 		Mockito.when(owner.getDistinguishedName()).thenReturn(name);
 		
-		MockCalendarAccountWithDistinguishedName accountOwner = new MockCalendarAccountWithDistinguishedName();
+		final MockCalendarAccountWithDistinguishedName accountOwner =
+						new MockCalendarAccountWithDistinguishedName();
 		accountOwner.setDistinguishedName(name);
 		
-		LDAPDelegateCalendarAccountDaoImpl accountDao = new LDAPDelegateCalendarAccountDaoImpl();
+		final LDAPDelegateCalendarAccountDaoImpl accountDao =
+						new LDAPDelegateCalendarAccountDaoImpl();
 		accountDao.setTreatOwnerAttributeAsDistinguishedName(true);
 		
-		List<IDelegateCalendarAccount> delegates = new ArrayList<IDelegateCalendarAccount>();
-		MockDelegateCalendarAccount mockDelegate = new MockDelegateCalendarAccount();
+		final List<IDelegateCalendarAccount> delegates = new ArrayList<>();
+		final MockDelegateCalendarAccount mockDelegate =
+						new MockDelegateCalendarAccount();
 		// off by one
 		mockDelegate.setAccountOwnerAttribute("wwid=ABCDE12346,ou=people,o=domain,o=isp");
 		delegates.add(mockDelegate);
@@ -84,8 +90,8 @@ public class LDAPDelegateCalendarAccountDaoImplTest {
 		Assert.assertEquals(0, delegates.size());
 	}
 	
-	class MockCalendarAccountWithDistinguishedName extends MockCalendarAccount implements HasDistinguishedName {
-
+	static class MockCalendarAccountWithDistinguishedName
+					extends MockCalendarAccount implements HasDistinguishedName {
 		/**
 		 * 
 		 */
@@ -95,7 +101,7 @@ public class LDAPDelegateCalendarAccountDaoImplTest {
 		/**
 		 * @param distinguishedName the distinguishedName to set
 		 */
-		public void setDistinguishedName(Name distinguishedName) {
+		public void setDistinguishedName(final Name distinguishedName) {
 			this.distinguishedName = distinguishedName;
 		}
 

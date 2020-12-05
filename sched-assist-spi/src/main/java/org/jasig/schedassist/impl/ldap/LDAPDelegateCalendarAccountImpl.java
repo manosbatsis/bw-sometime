@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -19,13 +19,12 @@
 
 package org.jasig.schedassist.impl.ldap;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.jasig.schedassist.model.AbstractCalendarAccount;
 import org.jasig.schedassist.model.ICalendarAccount;
 import org.jasig.schedassist.model.IDelegateCalendarAccount;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * {@link IDelegateCalendarAccount} sourced by LDAP.
@@ -33,8 +32,9 @@ import org.jasig.schedassist.model.IDelegateCalendarAccount;
  * @author Nicholas Blair
  * @version $Id: LDAPDelegateCalendarAccountImpl.java $
  */
-class LDAPDelegateCalendarAccountImpl extends AbstractCalendarAccount implements IDelegateCalendarAccount {
-
+class LDAPDelegateCalendarAccountImpl
+				extends AbstractCalendarAccount
+				implements IDelegateCalendarAccount {
 	/**
 	 * 
 	 */
@@ -47,9 +47,9 @@ class LDAPDelegateCalendarAccountImpl extends AbstractCalendarAccount implements
 	private final boolean eligible;
 	private final String location;
 	private final String contactInformation;
-	private Map<String, List<String>> attributesMap = new HashMap<String, List<String>>();
+	private final Map<String, List<String>> attributesMap;
 	private final String accountOwnerAttribute;
-	private ICalendarAccount accountOwner;
+	private final ICalendarAccount accountOwner;
 	
 	/**
 	 * Initializes a delegate account without setting the accountOwner.
@@ -57,7 +57,9 @@ class LDAPDelegateCalendarAccountImpl extends AbstractCalendarAccount implements
 	 * @param attributes
 	 * @param ldapAttributesKey
 	 */
-	public LDAPDelegateCalendarAccountImpl(Map<String, List<String>> attributes, LDAPAttributesKey ldapAttributesKey) {
+	public LDAPDelegateCalendarAccountImpl(
+					final Map<String, List<String>> attributes,
+					final LDAPAttributesKey ldapAttributesKey) {
 		this(attributes, ldapAttributesKey, null);
 	}
 	
@@ -68,123 +70,84 @@ class LDAPDelegateCalendarAccountImpl extends AbstractCalendarAccount implements
 	 * @param ldapAttributesKey
 	 * @param accountOwner
 	 */
-	public LDAPDelegateCalendarAccountImpl(Map<String, List<String>> attributes, LDAPAttributesKey ldapAttributesKey,
-			ICalendarAccount accountOwner) {
+	public LDAPDelegateCalendarAccountImpl(
+					final Map<String, List<String>> attributes,
+					final LDAPAttributesKey ldapAttributesKey,
+					final ICalendarAccount accountOwner) {
 		this.attributesMap = attributes;
 		this.accountOwner = accountOwner;
 		// populate fields first
-		calendarUniqueId = getSingleAttributeValue(attributes.get(ldapAttributesKey.getUniqueIdentifierAttributeName()));
-		displayName = getSingleAttributeValue(attributes.get(ldapAttributesKey.getDisplayNameAttributeName()));
-		emailAddress = getSingleAttributeValue(attributes.get(ldapAttributesKey.getEmailAddressAttributeName()));
-		username = getSingleAttributeValue(attributes.get(ldapAttributesKey.getUsernameAttributeName()));
-		location = getSingleAttributeValue(attributes.get(ldapAttributesKey.getDelegateLocationAttributeName()));
-		contactInformation = getSingleAttributeValue(attributes.get(ldapAttributesKey.getDelegateContactInformationAttributeName()));
-		accountOwnerAttribute = getSingleAttributeValue(attributes.get(ldapAttributesKey.getDelegateOwnerAttributeName()));
+		calendarUniqueId = getAttributeValue(ldapAttributesKey.getUniqueIdentifierAttributeName());
+		displayName = getAttributeValue(ldapAttributesKey.getDisplayNameAttributeName());
+		emailAddress = getAttributeValue(ldapAttributesKey.getEmailAddressAttributeName());
+		username = getAttributeValue(ldapAttributesKey.getUsernameAttributeName());
+		location = getAttributeValue(ldapAttributesKey.getDelegateLocationAttributeName());
+		contactInformation = getAttributeValue(ldapAttributesKey.getDelegateContactInformationAttributeName());
+		accountOwnerAttribute = getAttributeValue(ldapAttributesKey.getDelegateOwnerAttributeName());
 		// set eligibility
 		eligible = ldapAttributesKey.evaluateEligibilityAttributeValue(attributes);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.model.ICalendarAccount#getDisplayName()
-	 */
 	@Override
 	public String getDisplayName() {
 		return displayName;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.model.ICalendarAccount#getUsername()
-	 */
 	@Override
 	public String getUsername() {
 		return username;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.model.ICalendarAccount#getEmailAddress()
-	 */
 	@Override
 	public String getEmailAddress() {
 		return emailAddress;
 	}
 
-	/**
-	 * Default implementation returns username.
-	 *  (non-Javadoc)
-	 * @see org.jasig.schedassist.model.ICalendarAccount#getCalendarLoginId()
-	 */
 	@Override
 	public String getCalendarLoginId() {
 		return getUsername();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.model.ICalendarAccount#getCalendarUniqueId()
-	 */
 	@Override
 	public String getCalendarUniqueId() {
 		return calendarUniqueId;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.model.ICalendarAccount#getAttributes()
-	 */
 	@Override
 	public Map<String, List<String>> getAttributes() {
 		return this.attributesMap;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.model.ICalendarAccount#isEligible()
-	 */
 	@Override
 	public boolean isEligible() {
 		return eligible;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.model.IDelegateCalendarAccount#getAccountOwner()
-	 */
 	@Override
 	public ICalendarAccount getAccountOwner() {
 		return accountOwner;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.model.IDelegateCalendarAccount#getAccountOwnerUsername()
-	 */
 	@Override
 	public String getAccountOwnerAttribute() {
 		return accountOwnerAttribute;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.model.IDelegateCalendarAccount#getLocation()
-	 */
 	@Override
 	public String getLocation() {
 		return location;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.model.IDelegateCalendarAccount#getContactInformation()
-	 */
 	@Override
 	public String getContactInformation() {
 		return contactInformation;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.model.ICalendarAccount#isDelegate()
-	 */
 	@Override
 	public boolean isDelegate() {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		return "LDAPDelegateCalendarAccountImpl [calendarUniqueId="
@@ -195,5 +158,4 @@ class LDAPDelegateCalendarAccountImpl extends AbstractCalendarAccount implements
 				+ ", attributesMap=" + attributesMap + ", accountOwner="
 				+ accountOwner + ", toString()=" + super.toString() + "]";
 	}
-
 }

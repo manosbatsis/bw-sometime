@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -18,6 +18,8 @@
  */
 
 package org.jasig.schedassist.model;
+
+import org.bedework.util.misc.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,10 +75,7 @@ public abstract class AbstractCalendarAccount implements ICalendarAccount {
 	public String getUsername() {
 		return this.username;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.model.ICalendarAccount#isEligible()
-	 */
+
 	@Override
 	public boolean isEligible() {
 		return this.eligible;
@@ -84,63 +83,63 @@ public abstract class AbstractCalendarAccount implements ICalendarAccount {
 	/**
 	 * @param calendarUniqueId the calendarUniqueId to set
 	 */
-	public void setCalendarUniqueId(String calendarUniqueId) {
+	public void setCalendarUniqueId(final String calendarUniqueId) {
 		this.calendarUniqueId = calendarUniqueId;
 	}
+
 	/**
 	 * @param emailAddress the emailAddress to set
 	 */
-	public void setEmailAddress(String emailAddress) {
+	public void setEmailAddress(final String emailAddress) {
 		this.emailAddress = emailAddress;
 	}
+
 	/**
 	 * @param displayName the name to set
 	 */
-	public void setDisplayName(String displayName) {
+	public void setDisplayName(final String displayName) {
 		this.displayName = displayName;
 	}
+
 	/**
 	 * @param username the username to set
 	 */
-	public void setUsername(String username) {
+	public void setUsername(final String username) {
 		this.username = username;
 	}
+
 	/**
 	 * @param eligible the eligible to set
 	 */
-	public void setEligible(boolean eligible) {
+	public void setEligible(final boolean eligible) {
 		this.eligible = eligible;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.model.ICalendarAccount#isDelegate()
-	 */
 	@Override
 	public boolean isDelegate() {
 		return false;
 	}
+
 	/**
 	 * 
 	 * @param attributeName
 	 * @return
 	 */
-	protected List<String> getAttributeListSafely(String attributeName) {
-		Map<String, List<String>> map = getAttributes();
-		List<String> attributes = map.get(attributeName);
-		if(attributes == null) {
-			attributes = new ArrayList<String>();
-			map.put(attributeName, attributes);
-		}
-		
-		return attributes;
+	protected List<String> getAttributeListSafely(
+					final String attributeName) {
+		final Map<String, List<String>> map = getAttributes();
+
+		return map.computeIfAbsent(attributeName,
+															 k -> new ArrayList<String>());
 	}
 	
 	/**
 	 * 
-	 * @param attributeValues
-	 * @return
+	 * @param attributeValues as list
+	 * @return single value or null
 	 */
-	protected String getSingleAttributeValue(List<String> attributeValues) {
+	protected String getSingleAttributeValue(
+					final List<String> attributeValues) {
 		if(attributeValues == null) {
 			return null;
 		}
@@ -151,10 +150,7 @@ public abstract class AbstractCalendarAccount implements ICalendarAccount {
 		
 		return null;
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -171,95 +167,91 @@ public abstract class AbstractCalendarAccount implements ICalendarAccount {
 				+ ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
+
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+
+		if (getClass() != obj.getClass()) {
 			return false;
-		AbstractCalendarAccount other = (AbstractCalendarAccount) obj;
+		}
+
+		final AbstractCalendarAccount other = (AbstractCalendarAccount) obj;
+
 		if (calendarUniqueId == null) {
-			if (other.calendarUniqueId != null)
+			if (other.calendarUniqueId != null) {
 				return false;
-		} else if (!calendarUniqueId.equals(other.calendarUniqueId))
+			}
+		} else if (!calendarUniqueId.equals(other.calendarUniqueId)) {
 			return false;
+		}
+
 		if (displayName == null) {
-			if (other.displayName != null)
+			if (other.displayName != null) {
 				return false;
-		} else if (!displayName.equals(other.displayName))
+			}
+		} else if (!displayName.equals(other.displayName)) {
 			return false;
-		if (eligible != other.eligible)
+		}
+
+		if (eligible != other.eligible) {
 			return false;
+		}
+
 		if (emailAddress == null) {
-			if (other.emailAddress != null)
+			if (other.emailAddress != null) {
 				return false;
-		} else if (!emailAddress.equals(other.emailAddress))
+			}
+		} else if (!emailAddress.equals(other.emailAddress)) {
 			return false;
+		}
+
 		if (username == null) {
-			if (other.username != null)
+			if (other.username != null) {
 				return false;
-		} else if (!username.equals(other.username))
+			}
+		} else if (!username.equals(other.username)) {
 			return false;
+		}
+
 		return true;
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("AbstractCalendarAccount [calendarUniqueId=");
-		builder.append(calendarUniqueId);
-		builder.append(", displayName=");
-		builder.append(displayName);
-		builder.append(", eligible=");
-		builder.append(eligible);
-		builder.append(", emailAddress=");
-		builder.append(emailAddress);
-		builder.append(", username=");
-		builder.append(username);
-		builder.append("]");
+		final ToString builder = new ToString(this);
+
+		builder.append("calendarUniqueId", calendarUniqueId);
+		builder.append("displayName", displayName);
+		builder.append("eligible", eligible);
+		builder.append("emailAddress", emailAddress);
+		builder.append("username", username);
+
 		return builder.toString();
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.model.ICalendarAccount#getAttributeValue(java.lang.String)
-	 */
+
 	@Override
-	public final String getAttributeValue(String attributeName) {
-		List<String> values = getAttributeListSafely(attributeName);
-		String value = getSingleAttributeValue(values);
-		return value;
+	public final String getAttributeValue(final String attributeName) {
+		final List<String> values = getAttributeListSafely(attributeName);
+		return getSingleAttributeValue(values);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.model.ICalendarAccount#getAttributes()
-	 */
 	@Override
 	public abstract Map<String, List<String>> getAttributes();
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.jasig.schedassist.model.ICalendarAccount#getCalendarLoginId()
-	 */
 	@Override
 	public abstract String getCalendarLoginId();
 	
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.model.ICalendarAccount#getAttributeValues(java.lang.String)
-	 */
 	@Override
-	public final List<String> getAttributeValues(String attributeName) {
-		List<String> values = getAttributeListSafely(attributeName);
-		return values;
+	public final List<String> getAttributeValues(final String attributeName) {
+		return getAttributeListSafely(attributeName);
 	}
 	
 }

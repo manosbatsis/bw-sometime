@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -19,13 +19,13 @@
 
 package org.jasig.schedassist.impl.ldap;
 
+import org.jasig.schedassist.model.ICalendarAccount;
+
 import java.util.List;
 import java.util.Map;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
-
-import org.jasig.schedassist.model.ICalendarAccount;
 
 /**
  *
@@ -36,20 +36,20 @@ public class DefaultDelegateAccountAttributesMapperImpl extends DefaultAttribute
 
 	private final ICalendarAccount accountOwner;
 	public DefaultDelegateAccountAttributesMapperImpl(
-			LDAPAttributesKey ldapAttributesKey, ICalendarAccount accountOwner) {
+					final LDAPAttributesKey ldapAttributesKey,
+					final ICalendarAccount accountOwner) {
 		super(ldapAttributesKey);
 		this.accountOwner = accountOwner;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.springframework.ldap.core.AttributesMapper#mapFromAttributes(javax.naming.directory.Attributes)
-	 */
 	@Override
-	public Object mapFromAttributes(Attributes attributes) throws NamingException {
-		Map<String, List<String>> attributesMap = convertToStringAttributesMap(attributes);
-		
-		LDAPDelegateCalendarAccountImpl delegate = new LDAPDelegateCalendarAccountImpl(attributesMap, ldapAttributesKey, accountOwner);
-		return delegate;
-	}
+	public Object mapFromAttributes(final Attributes attributes)
+					throws NamingException {
+		final Map<String, List<String>> attributesMap =
+						convertToStringAttributesMap(attributes);
 
+		return new LDAPDelegateCalendarAccountImpl(attributesMap,
+																							 ldapAttributesKey,
+																							 accountOwner);
+	}
 }
