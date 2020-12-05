@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
@@ -19,14 +19,6 @@
 
 package org.jasig.schedassist.impl.ldap;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.naming.directory.SearchControls;
-
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,13 +30,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.ldap.SizeLimitExceededException;
 import org.springframework.ldap.TimeLimitExceededException;
-import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapOperations;
 import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.filter.Filter;
 import org.springframework.ldap.filter.LikeFilter;
 import org.springframework.ldap.filter.OrFilter;
+import org.springframework.ldap.support.LdapUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.naming.directory.SearchControls;
 
 /**
  * LDAP backed {@link IDelegateCalendarAccountDao} implementation.
@@ -73,80 +73,88 @@ public class LDAPDelegateCalendarAccountDaoImpl implements
 	 * @param ldapTemplate the ldapTemplate to set
 	 */
 	@Autowired
-	public void setLdapTemplate(LdapOperations ldapTemplate) {
+	public void setLdapTemplate(final LdapOperations ldapTemplate) {
 		this.ldapTemplate = ldapTemplate;
 	}
+
 	/**
 	 * @param ldapAttributesKey the ldapAttributesKey to set
 	 */
 	@Autowired
-	public void setLdapAttributesKey(LDAPAttributesKey ldapAttributesKey) {
+	public void setLdapAttributesKey(final LDAPAttributesKey ldapAttributesKey) {
 		this.ldapAttributesKey = ldapAttributesKey;
 	}
+
 	/**
 	 * @param baseDn the baseDn to set
 	 */
 	@Value("${ldap.resourceAccountBaseDn:o=isp}")
-	public void setBaseDn(String baseDn) {
+	public void setBaseDn(final String baseDn) {
 		this.baseDn = baseDn;
 	}
+
 	/**
 	 * @param searchResultsLimit the searchResultsLimit to set
 	 */
 	@Value("${ldap.searchResultsLimit:25}")
-	public void setSearchResultsLimit(long searchResultsLimit) {
+	public void setSearchResultsLimit(final long searchResultsLimit) {
 		this.searchResultsLimit = searchResultsLimit;
 	}
+
 	/**
 	 * @param searchTimeLimit the searchTimeLimit to set (in milliseconds)
 	 */
 	@Value("${ldap.searchTimeLimitMillis:5000}")
-	public void setSearchTimeLimit(int searchTimeLimit) {
+	public void setSearchTimeLimit(final int searchTimeLimit) {
 		this.searchTimeLimit = searchTimeLimit;
 	}
+
 	/**
 	 * @return the treatOwnerAttributeAsDistinguishedName
 	 */
 	public boolean isTreatOwnerAttributeAsDistinguishedName() {
 		return treatOwnerAttributeAsDistinguishedName;
 	}
+
 	/**
 	 * @param treatOwnerAttributeAsDistinguishedName the treatOwnerAttributeAsDistinguishedName to set
 	 */
 	@Value("${ldap.treatResourceOwnerAttributeAsDistinguishedName:true}")
 	public void setTreatOwnerAttributeAsDistinguishedName(
-			boolean treatOwnerAttributeAsDistinguishedName) {
+					final boolean treatOwnerAttributeAsDistinguishedName) {
 		this.treatOwnerAttributeAsDistinguishedName = treatOwnerAttributeAsDistinguishedName;
 	}
+
 	/**
 	 * @param enforceSpecificObjectClass the enforceSpecificObjectClass to set
 	 */
 	@Value("${ldap.resources.enforceSpecificObjectClass:false}")
-	public void setEnforceSpecificObjectClass(boolean enforceSpecificObjectClass) {
+	public void setEnforceSpecificObjectClass(
+					final boolean enforceSpecificObjectClass) {
 		this.enforceSpecificObjectClass = enforceSpecificObjectClass;
 	}
+
 	/**
 	 * @param requiredObjectClass the requiredObjectClass to set
 	 */
 	@Value("${ldap.resources.requiredObjectClass:inetresource}")
-	public void setRequiredObjectClass(String requiredObjectClass) {
+	public void setRequiredObjectClass(final String requiredObjectClass) {
 		this.requiredObjectClass = requiredObjectClass;
 	}
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.IDelegateCalendarAccountDao#searchForDelegates(java.lang.String, org.jasig.schedassist.model.ICalendarAccount)
-	 */
+
 	@Override
-	public List<IDelegateCalendarAccount> searchForDelegates(String searchText,
-			ICalendarAccount owner) {
+	public List<IDelegateCalendarAccount> searchForDelegates(
+					final String searchText,
+					final ICalendarAccount owner) {
 		String searchTextInternal = searchText.replace(" ", WILDCARD);
 		if(!searchTextInternal.endsWith(WILDCARD)) {
 			searchTextInternal += WILDCARD;
 		}
 
-		AndFilter searchFilter = new AndFilter();
+		final AndFilter searchFilter = new AndFilter();
 		
 		// inner orFilter searches on displayName and username
-		OrFilter orFilter = new OrFilter();
+		final OrFilter orFilter = new OrFilter();
 		orFilter.or(new LikeFilter(ldapAttributesKey.getDisplayNameAttributeName(), searchTextInternal));
 		orFilter.or(new LikeFilter(ldapAttributesKey.getUsernameAttributeName(), searchTextInternal));
 		
@@ -159,105 +167,101 @@ public class LDAPDelegateCalendarAccountDaoImpl implements
 		searchFilter.and(orFilter);
 		searchFilter.and(new LikeFilter(ldapAttributesKey.getUniqueIdentifierAttributeName(), WILDCARD));
 
-		if(enforceSpecificObjectClass) {
+		if (enforceSpecificObjectClass) {
 			searchFilter.and(new EqualsFilter(OBJECTCLASS, requiredObjectClass));
 		}
-		List<IDelegateCalendarAccount> results = new ArrayList<IDelegateCalendarAccount>(executeSearchReturnList(searchFilter, owner));
-		return results;
+
+		return new ArrayList<>(
+						executeSearchReturnList(searchFilter, owner));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.IDelegateCalendarAccountDao#searchForDelegates(java.lang.String)
-	 */
 	@Override
-	public List<IDelegateCalendarAccount> searchForDelegates(String searchText) {
+	public List<IDelegateCalendarAccount> searchForDelegates(
+					final String searchText) {
 		return searchForDelegates(searchText, null);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.IDelegateCalendarAccountDao#getDelegate(java.lang.String)
-	 */
 	@Override
-	public IDelegateCalendarAccount getDelegate(String accountName) {
+	public IDelegateCalendarAccount getDelegate(final String accountName) {
 		return getDelegate(accountName, (ICalendarAccount) null);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.IDelegateCalendarAccountDao#getDelegate(java.lang.String, org.jasig.schedassist.model.ICalendarAccount)
-	 */
 	@Override
-	public IDelegateCalendarAccount getDelegate(String accountName,
-			ICalendarAccount owner) {
-		AndFilter searchFilter = new AndFilter();
-		searchFilter.and(new EqualsFilter(ldapAttributesKey.getDisplayNameAttributeName(), accountName));
-		if(owner != null && !isTreatOwnerAttributeAsDistinguishedName()) {
+	public IDelegateCalendarAccount getDelegate(
+					final String accountName,
+					final ICalendarAccount owner) {
+		final AndFilter searchFilter = new AndFilter();
+		searchFilter.and(new EqualsFilter(
+						ldapAttributesKey.getDisplayNameAttributeName(),
+						accountName));
+
+		if (owner != null && !isTreatOwnerAttributeAsDistinguishedName()) {
 			// TODO assumes delegateOwnerAttributeName has values of ICalendarAccount#getUsername
 			searchFilter.and(new EqualsFilter(ldapAttributesKey.getDelegateOwnerAttributeName(), owner.getUsername()));
 		}
+
 		searchFilter.and(new LikeFilter(ldapAttributesKey.getUniqueIdentifierAttributeName(), WILDCARD));
 
-		if(enforceSpecificObjectClass) {
+		if (enforceSpecificObjectClass) {
 			searchFilter.and(new EqualsFilter(OBJECTCLASS, requiredObjectClass));
 		}
-		List<IDelegateCalendarAccount> results = executeSearchReturnList(searchFilter, owner);
-		IDelegateCalendarAccount delegate = (IDelegateCalendarAccount) DataAccessUtils.singleResult(results);
-		return delegate;
+
+		final List<IDelegateCalendarAccount> results =
+						executeSearchReturnList(searchFilter, owner);
+		return DataAccessUtils.singleResult(results);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.IDelegateCalendarAccountDao#getDelegateByUniqueId(java.lang.String)
-	 */
 	@Override
-	public IDelegateCalendarAccount getDelegateByUniqueId(String accountUniqueId) {
+	public IDelegateCalendarAccount getDelegateByUniqueId(
+					final String accountUniqueId) {
 		return getDelegateByUniqueId(accountUniqueId, null);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.IDelegateCalendarAccountDao#getDelegateByUniqueId(java.lang.String, org.jasig.schedassist.model.ICalendarAccount)
-	 */
 	@Override
 	public IDelegateCalendarAccount getDelegateByUniqueId(
-			String accountUniqueId, ICalendarAccount owner) {
-		AndFilter searchFilter = new AndFilter();
+					final String accountUniqueId,
+					final ICalendarAccount owner) {
+		final AndFilter searchFilter = new AndFilter();
 		searchFilter.and(new EqualsFilter(ldapAttributesKey.getUniqueIdentifierAttributeName(), accountUniqueId));
-		if(owner != null && !isTreatOwnerAttributeAsDistinguishedName()) {
+		if (owner != null && !isTreatOwnerAttributeAsDistinguishedName()) {
 			// TODO assumes delegateOwnerAttributeName has values of ICalendarAccount#getUsername
 			searchFilter.and(new EqualsFilter(ldapAttributesKey.getDelegateOwnerAttributeName(), owner.getUsername()));
 		}
-		if(enforceSpecificObjectClass) {
+		if (enforceSpecificObjectClass) {
 			searchFilter.and(new EqualsFilter(OBJECTCLASS, requiredObjectClass));
 		}
-		List<IDelegateCalendarAccount> results = executeSearchReturnList(searchFilter, owner);
-		IDelegateCalendarAccount delegate = (IDelegateCalendarAccount) DataAccessUtils.singleResult(results);
-		return delegate;
+
+		final List<IDelegateCalendarAccount> results = executeSearchReturnList(searchFilter, owner);
+		return DataAccessUtils.singleResult(results);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jasig.schedassist.IDelegateCalendarAccountDao#getDelegate(java.lang.String, java.lang.String)
-	 */
 	@Override
-	public IDelegateCalendarAccount getDelegate(String attributeName,
-			String attributeValue) {
+	public IDelegateCalendarAccount getDelegate(
+					final String attributeName,
+					final String attributeValue) {
 		Filter filter = new EqualsFilter(attributeName, attributeValue);
-		if(enforceSpecificObjectClass) {
-			AndFilter andFilter = new AndFilter();
+		if (enforceSpecificObjectClass) {
+			final AndFilter andFilter = new AndFilter();
 			andFilter.and(filter);
 			andFilter.and(new EqualsFilter(OBJECTCLASS, requiredObjectClass));
 			filter = andFilter;
 		}
-		List<IDelegateCalendarAccount> results = executeSearchReturnList(filter, null);
-		IDelegateCalendarAccount delegate = (IDelegateCalendarAccount) DataAccessUtils.singleResult(results);
-		return delegate;
+
+		final List<IDelegateCalendarAccount> results = executeSearchReturnList(filter, null);
+		return DataAccessUtils.singleResult(results);
 	}
+
 	/**
 	 * 
-	 * @param searchFilter
+	 * @param searchFilter to limit search
 	 * @param owner
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	protected List<IDelegateCalendarAccount> executeSearchReturnList(final Filter searchFilter, final ICalendarAccount owner) {
-		SearchControls searchControls = new SearchControls();
+	protected List<IDelegateCalendarAccount> executeSearchReturnList(
+					final Filter searchFilter,
+					final ICalendarAccount owner) {
+		final SearchControls searchControls = new SearchControls();
 		searchControls.setCountLimit(searchResultsLimit);
 		searchControls.setTimeLimit(searchTimeLimit);
 		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
@@ -269,18 +273,19 @@ public class LDAPDelegateCalendarAccountDaoImpl implements
 				searchFilter.toString(), 
 				searchControls, 
 				new DefaultDelegateAccountAttributesMapperImpl(ldapAttributesKey, owner));
-			if(log.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				log.debug("search " + searchFilter + " returned " + results.size() + " results");
 			}
 			
-			if(isTreatOwnerAttributeAsDistinguishedName() && owner != null && owner instanceof HasDistinguishedName) {
-				HasDistinguishedName ldapOwnerAccount = (HasDistinguishedName) owner;
+			if (isTreatOwnerAttributeAsDistinguishedName() &&
+							owner instanceof HasDistinguishedName) {
+				final HasDistinguishedName ldapOwnerAccount = (HasDistinguishedName) owner;
 				enforceDistinguishedNameMatch(results, ldapOwnerAccount);
 			}
-			Collections.sort(results, new DelegateDisplayNameComparator());
-		} catch (SizeLimitExceededException e) {
+			results.sort(new DelegateDisplayNameComparator());
+		} catch (final SizeLimitExceededException e) {
 			log.debug("search filter exceeded size limit (" + searchResultsLimit + "): " + searchFilter);
-		} catch (TimeLimitExceededException e) {
+		} catch (final TimeLimitExceededException e) {
 			log.debug("search filter exceeded time limit(" + searchTimeLimit + " milliseconds): " + searchFilter);
 		}
 		return results;
@@ -291,18 +296,34 @@ public class LDAPDelegateCalendarAccountDaoImpl implements
 	 * @param delegates
 	 * @param desiredOwnerAccount
 	 */
-	protected void enforceDistinguishedNameMatch(List<IDelegateCalendarAccount> delegates, HasDistinguishedName desiredOwnerAccount) {
-		for(Iterator<IDelegateCalendarAccount> i = delegates.iterator(); i.hasNext(); ) {
-			IDelegateCalendarAccount delegate = i.next();
-			String ownerAttributeValue = delegate.getAccountOwnerAttribute();
-			if(!desiredOwnerAccount.getDistinguishedName().equals(new DistinguishedName(ownerAttributeValue))) {
-				if(log.isDebugEnabled()) {
-					log.debug(ownerAttributeValue + " does not match desired owner ICalendarAccount dn: " + desiredOwnerAccount.getDistinguishedName());
+	protected void enforceDistinguishedNameMatch(
+					final List<IDelegateCalendarAccount> delegates,
+					final HasDistinguishedName desiredOwnerAccount) {
+		for (final Iterator<IDelegateCalendarAccount> i = delegates.iterator(); i.hasNext(); ) {
+			final IDelegateCalendarAccount delegate = i.next();
+			final String ownerAttributeValue = delegate.getAccountOwnerAttribute();
+			if (ownerAttributeValue == null) {
+				if (log.isDebugEnabled()) {
+					log.debug("No ownerAttributeValue for " +
+														delegate.getCalendarUniqueId());
+				}
+				i.remove();
+				continue;
+			}
+
+			final var owner = LdapUtils.newLdapName(ownerAttributeValue);
+			if (!desiredOwnerAccount.getDistinguishedName()
+															.equals(owner)) {
+				if (log.isDebugEnabled()) {
+					log.debug(ownerAttributeValue +
+														" does not match desired owner ICalendarAccount dn: " +
+														desiredOwnerAccount.getDistinguishedName());
 				}
 				i.remove();
 			}
 		}
 	}
+
 	/**
 	 * Simple {@link Comparator} for {@link IDelegateCalendarAccount} that compares
 	 * on the displayName field.
@@ -312,9 +333,11 @@ public class LDAPDelegateCalendarAccountDaoImpl implements
 	 */
 	private static class DelegateDisplayNameComparator implements Comparator<IDelegateCalendarAccount>{
 		@Override
-		public int compare(IDelegateCalendarAccount o1,
-				IDelegateCalendarAccount o2) {
-			return new CompareToBuilder().append(o1.getDisplayName(), o2.getDisplayName()).toComparison();
+		public int compare(final IDelegateCalendarAccount o1,
+											 final IDelegateCalendarAccount o2) {
+			return new CompareToBuilder()
+							.append(o1.getDisplayName(), o2.getDisplayName())
+							.toComparison();
 		}
 	}
 }

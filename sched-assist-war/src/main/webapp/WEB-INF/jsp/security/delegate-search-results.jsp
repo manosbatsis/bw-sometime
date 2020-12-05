@@ -56,6 +56,7 @@
 <fieldset>
 <input type="hidden" name="username" value="${delegate.username }"/>
 <input type="submit" value="Login" />
+<security:csrfInput />
 </fieldset>
 </form></li>
 </c:forEach>

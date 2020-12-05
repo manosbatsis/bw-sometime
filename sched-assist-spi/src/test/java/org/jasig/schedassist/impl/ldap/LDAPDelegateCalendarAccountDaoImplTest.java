@@ -18,18 +18,19 @@
  */
 package org.jasig.schedassist.impl.ldap;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.naming.Name;
-
 import org.jasig.schedassist.model.IDelegateCalendarAccount;
 import org.jasig.schedassist.model.mock.MockCalendarAccount;
 import org.jasig.schedassist.model.mock.MockDelegateCalendarAccount;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.ldap.core.DistinguishedName;
+import org.springframework.ldap.support.LdapUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.naming.Name;
+import javax.naming.ldap.LdapName;
 
 /**
  * Tests for {@link LDAPDelegateCalendarAccountDaoImpl}.
@@ -40,8 +41,9 @@ public class LDAPDelegateCalendarAccountDaoImplTest {
 
 	@Test
 	public void testEnforceDistinguishNameControl() {
-		DistinguishedName name = new DistinguishedName("wwid=ABCDE12345,ou=people,o=domain,o=isp");
-		HasDistinguishedName owner = Mockito.mock(HasDistinguishedName.class);
+		final LdapName name = LdapUtils.newLdapName(
+						"wwid=ABCDE12345,ou=people,o=domain,o=isp");
+		final HasDistinguishedName owner = Mockito.mock(HasDistinguishedName.class);
 		Mockito.when(owner.getDistinguishedName()).thenReturn(name);
 		
 		MockCalendarAccountWithDistinguishedName accountOwner = new MockCalendarAccountWithDistinguishedName();
@@ -60,8 +62,10 @@ public class LDAPDelegateCalendarAccountDaoImplTest {
 	
 	@Test
 	public void testEnforceDistinguishNameNoMatch() {
-		DistinguishedName name = new DistinguishedName("wwid=ABCDE12345,ou=people,o=domain,o=isp");
-		HasDistinguishedName owner = Mockito.mock(HasDistinguishedName.class);
+		final LdapName name = LdapUtils.newLdapName(
+						"wwid=ABCDE12345,ou=people,o=domain,o=isp");
+		final HasDistinguishedName owner =
+						Mockito.mock(HasDistinguishedName.class);
 		Mockito.when(owner.getDistinguishedName()).thenReturn(name);
 		
 		MockCalendarAccountWithDistinguishedName accountOwner = new MockCalendarAccountWithDistinguishedName();
