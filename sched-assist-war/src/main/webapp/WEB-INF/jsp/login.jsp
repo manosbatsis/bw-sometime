@@ -55,7 +55,7 @@
 <form action="${login}" method="post">
   <fieldset>
     <label for="username"><spring:message code="username"/>:&nbsp;</label><input name="username" type="text"/><br/>
-    <label for="username"><spring:message code="password"/>:&nbsp;</label><input name="password" type="password"/><br/>
+    <label for="password"><spring:message code="password"/>:&nbsp;</label><input name="password" type="password"/><br/>
     <input type="submit" name="submit" value="Login"/>
     <security:csrfInput/>
   </fieldset>

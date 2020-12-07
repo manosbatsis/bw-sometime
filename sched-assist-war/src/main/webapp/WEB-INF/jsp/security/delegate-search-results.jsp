@@ -20,7 +20,7 @@
 --%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@ include file="/WEB-INF/jsp/includes.jsp" %>
+<%@ include file="../includes.jsp" %>
 <%-- 
   Copyright 2008-2010 The Board of Regents of the University of Wisconsin System.
 
@@ -39,12 +39,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <title><spring:message code="application.name"/> - <spring:message code="resource.search"/></title>
-<%@ include file="/WEB-INF/jsp/themes/jasig/head-elements.jsp" %>
+<%@ include file="../themes/jasig/head-elements.jsp" %>
 </head>
 
 <body>
-<%@ include file="/WEB-INF/jsp/themes/jasig/body-start.jsp" %>
-<%@ include file="/WEB-INF/jsp/login-info.jsp" %>
+<%@ include file="../themes/jasig/body-start.jsp" %>
+<%@ include file="../login-info.jsp" %>
 <div id="content" class="main col">
 <div id="status">
 <p><spring:message code="search.results.for"/>&nbsp;<i><c:out value="${searchText}"/></i></p>
@@ -55,7 +55,7 @@
 <form action="<c:url value="/delegate_switch_user"/>" method="post">
 <fieldset>
 <input type="hidden" name="username" value="${delegate.username }"/>
-<input type="submit" value="Login" />
+<input type="submit" value="<spring:message code="log.in"/>" />
 <security:csrfInput />
 </fieldset>
 </form></li>
@@ -66,6 +66,6 @@
 
 </div> <!--  content -->
 
-<%@ include file="/WEB-INF/jsp/themes/jasig/body-end.jsp" %>
+<%@ include file="../themes/jasig/body-end.jsp" %>
 </body>
 </html>

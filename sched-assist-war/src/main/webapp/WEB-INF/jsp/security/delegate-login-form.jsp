@@ -66,6 +66,7 @@ $(document).ready(function(){
 <input type="text" id="delegateName" name="username"/>
 <input type="submit" value="<spring:message code="log.in"/>" />
 </fieldset>
+<security:csrfInput />
 </form>
 </div>
 </div> <!--  content -->
