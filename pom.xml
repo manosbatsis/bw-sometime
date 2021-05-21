@@ -16,12 +16,12 @@
 		<maven.jaxb.plugin.version>2.5.0</maven.jaxb.plugin.version>
 
 		<!-- Bedework Versions -->
-		<bw-util.version>4.0.27</bw-util.version>
-		<bw-util-deploy.version>4.0.26</bw-util-deploy.version>
+		<bw-util.version>4.0.28</bw-util.version>
+		<bw-util-deploy.version>4.0.28</bw-util-deploy.version>
 
 		<ical4j.groupId>org.bedework.ical4j</ical4j.groupId>
 		<ical4j.artifactId>ical4j</ical4j.artifactId>
-		<ical4j.version>3.0.13-SNAPSHOT</ical4j.version>
+		<ical4j.version>3.0.13</ical4j.version>
 
 		<commons-codec.version>1.15</commons-codec.version>
 		<commons-fileupload.version>1.3.3</commons-fileupload.version>
