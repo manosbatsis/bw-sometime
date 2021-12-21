@@ -60,10 +60,12 @@
 			<groupId>org.apache.ws.commons.schema</groupId>
 			<artifactId>XmlSchema</artifactId>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 		</dependency>
+		-->
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
